@@ -20,3 +20,7 @@ using std::string;
             //write type to string here!
             return name;
         }
+
+        Settlement Settlement::clone(){
+            return Settlement(name,type);
+        }
