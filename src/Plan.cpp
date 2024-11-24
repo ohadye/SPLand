@@ -5,10 +5,9 @@ using std::vector;
 using std::string;
 
     Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions):
-        plan_id(planId), facilityOptions(facilityOptions), settlement(settlement)
-    {
-        this->selectionPolicy = selectionPolicy;
-    }
+        plan_id(planId), settlement(settlement), facilityOptions(facilityOptions),  selectionPolicy(selectionPolicy), status(PlanStatus::AVALIABLE),
+        facilities(), underConstruction(),life_quality_score(0),economy_score(0),environment_score(0)
+    {}
 /*    Plan::Plan(const Plan& other) : plan_id(other.getplanId), facilityOptions(facilityOptions), settlement(settlement){
 
     }

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-    Simulation::Simulation(const string &configFilePath) : isRunning(0){
+    Simulation::Simulation(const string &configFilePath) : isRunning(0), actionsLog(), plans(), settlements(), facilitiesOptions(){
         std::ifstream configFile;
         configFile.open(configFilePath,std::ios::in);
         if(!configFile)
@@ -43,16 +43,20 @@
         return 1; //implement!
     }
     Settlement &Simulation::getSettlement(const string &settlementName){
+        Settlement *setPoint = & this->settlements.back();
         for(Settlement set : this->settlements){
             if(set.Settlement::getName() == settlementName)
-                return set;
+                setPoint = &set;
         }
+        return *setPoint;
     }
     Plan &Simulation::getPlan(const int planID){
+        Plan *planPoint = & this->plans.back();
         for(Plan p : this->plans){
             if(p.Plan::getID() == planID)
-                return p;
+                planPoint = &p;
         }
+        return *planPoint;
     }
     void Simulation::step(){
 
