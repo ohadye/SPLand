@@ -5,16 +5,27 @@ using std::vector;
 using std::string;
 
     Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions):
-        plan_id(planId), settlement(settlement), facilityOptions(facilityOptions),  selectionPolicy(selectionPolicy), status(PlanStatus::AVALIABLE),
-        facilities(), underConstruction(),life_quality_score(0),economy_score(0),environment_score(0)
+        plan_id(planId), settlement(settlement), selectionPolicy(selectionPolicy), status(PlanStatus::AVALIABLE),
+        facilities(),underConstruction(),facilityOptions(facilityOptions), life_quality_score(0),economy_score(0),environment_score(0)
     {}
-/*    Plan::Plan(const Plan& other) : plan_id(other.getplanId), facilityOptions(facilityOptions), settlement(settlement){
+    Plan::Plan(const Plan& other) : plan_id(other.plan_id), settlement(other.settlement), selectionPolicy(other.selectionPolicy->clone()), status(other.status), 
+    facilities(),underConstruction(),facilityOptions(other.facilityOptions), life_quality_score(other.life_quality_score),economy_score(other.economy_score),
+    environment_score(other.environment_score){
+        for(Facility* f : other.facilities){
+            this->facilities.push_back(f->clone());
+        }
+        for(Facility* f : other.underConstruction){
+            this->underConstruction.push_back(f->clone());
+        }
+    }
 
+    Plan* Plan::clone(){
+        return new Plan(*this);
     }
 
     const Settlement& Plan::getSettlement() const {
         return this->settlement;
-    } */
+    } 
 
     const int Plan::getlifeQualityScore() const{
         return life_quality_score;

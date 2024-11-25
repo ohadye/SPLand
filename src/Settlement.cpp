@@ -21,6 +21,6 @@ using std::string;
             return name;
         }
 
-        Settlement Settlement::clone(){
-            return Settlement(name,type);
+        Settlement* Settlement::clone(){
+            return new Settlement(name,type);
         }
