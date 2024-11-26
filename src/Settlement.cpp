@@ -8,6 +8,15 @@ using std::string;
             name(other.name) , type(other.type)
         {}
 
+        string Settlement::getTypeString(SettlementType type) {
+            if (type == SettlementType::CITY)
+                return "city";
+            else if (type == SettlementType::METROPOLIS)
+                return "metropolis";
+            else
+                return "village";
+        }
+
         const string &Settlement::getName() const{
             return this->name;
         }

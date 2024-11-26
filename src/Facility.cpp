@@ -13,6 +13,14 @@ using std::vector;
     {
 
     }
+    string FacilityType::getCategoryString(FacilityCategory category){
+        if (category == FacilityCategory::ECONOMY)
+            return "economy";
+        else if(category == FacilityCategory::ENVIRONMENT)
+            return "environment";
+        else    
+            return "life quality";
+    }
 
     const string &FacilityType::getName() const{
         return this->name;
