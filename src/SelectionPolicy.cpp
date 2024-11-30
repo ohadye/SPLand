@@ -27,7 +27,9 @@ using std::vector;
     BalancedSelection::BalancedSelection(const BalancedSelection& other): 
         LifeQualityScore(other.LifeQualityScore), EconomyScore(other.EconomyScore), EnvironmentScore(other.EnvironmentScore)
     {}
-    const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {}             //implement!!
+    const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
+        
+    }             //implement!!
     const string BalancedSelection::toString() const { }//implement!
     BalancedSelection *BalancedSelection::clone() const {
         return new BalancedSelection(*this);

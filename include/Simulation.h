@@ -21,7 +21,9 @@ class Simulation {
         bool isSettlementExists(const string &settlementName);
         bool doesFacilityExist(const string& facilityName);
         Settlement &getSettlement(const string &settlementName);
+        static SelectionPolicy* parseSelectionPolicy(const string& policy);
         Plan &getPlan(const int planID);
+        const string toString() const;
         void step();
         void close();
         void open();
