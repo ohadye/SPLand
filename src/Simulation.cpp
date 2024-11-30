@@ -13,7 +13,7 @@
         while(getline(configFile,line)){
             argumentLine = Auxiliary::parseArguments(line);
             if(argumentLine[0] == "settlement"){
-                std::cout<<"add settlement accessed"<<std::endl;
+                Simulation::addSettlement(new Settlement(argumentLine[1], Settlement::parseSettlementType(argumentLine[2])));
             }
             else if(argumentLine[0] == "facility"){
                 std::cout<<"add facility accessed"<<std::endl;
@@ -28,19 +28,38 @@
 
     }
     void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
-
+        plans.push_back(Plan(planCounter++, settlement, selectionPolicy, this->facilitiesOptions));
     }
     void Simulation::addAction(BaseAction *action){
-
+        actionsLog.push_back(action);
     }
-    bool Simulation::addSettlement(Settlement* settlement){
-        return 1; //implement!
+    bool Simulation::addSettlement(Settlement* settlement){ 
+        if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement?
+            return false;    
+        settlements.push_back(settlement);
+        return true;
     }
     bool Simulation::addFacility(FacilityType facility){
-        return 1; //implement!
+        if(Simulation::doesFacilityExist(facility.getName()))   // is this my job to check or action AddFacility?
+            return false;
+        facilitiesOptions.push_back(facility);
+        return true;
     }
+
+    bool Simulation::doesFacilityExist(const string &facilityName){
+        for(FacilityType &f : this->facilitiesOptions){
+            if(f.FacilityType::getName() == facilityName)
+                return true;
+        }
+        return false;
+    }
+
     bool Simulation::isSettlementExists(const string &settlementName){
-        return 1; //implement!
+        for(Settlement* set : this->settlements){
+            if(set->Settlement::getName() == settlementName)
+                return true;
+        }
+        return false;
     }
     Settlement &Simulation::getSettlement(const string &settlementName){
         Settlement *setPoint =  nullptr;//@todo check if this is good practice

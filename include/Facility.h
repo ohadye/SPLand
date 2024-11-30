@@ -22,11 +22,13 @@ class FacilityType {
         FacilityType(const FacilityType& other);
         const string &getName() const;
         static string getCategoryString(FacilityCategory category);
+        static FacilityCategory parseFacilityCategory(const string& category);
         int getCost() const;
         int getLifeQualityScore() const;
         int getEnvironmentScore() const;
         int getEconomyScore() const;
         FacilityCategory getCategory() const;
+//        bool operator==(FacilityType& other);
 
     protected:
         const string name;

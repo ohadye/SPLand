@@ -17,6 +17,15 @@ using std::string;
                 return "village";
         }
 
+        SettlementType Settlement::parseSettlementType(const string& type){
+            if(type == "1")
+                return SettlementType::CITY;
+            else if(type == "2")
+                return SettlementType::METROPOLIS;
+            else
+                return SettlementType::VILLAGE;
+        }
+
         const string &Settlement::getName() const{
             return this->name;
         }

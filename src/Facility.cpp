@@ -14,13 +14,31 @@ using std::vector;
 
     }
     string FacilityType::getCategoryString(FacilityCategory category){
-        if (category == FacilityCategory::ECONOMY)
-            return "economy";
-        else if(category == FacilityCategory::ENVIRONMENT)
-            return "environment";
-        else    
-            return "life quality";
+        switch (category){
+            case FacilityCategory::ECONOMY : return "economy";
+            case FacilityCategory::ENVIRONMENT : return "environment";
+            case FacilityCategory::LIFE_QUALITY : return "life quality";
+        }
     }
+    
+    FacilityCategory FacilityType::parseFacilityCategory(const string& category){
+        if(category == "0")
+            return FacilityCategory::LIFE_QUALITY;
+        else if( category == "1")
+            return FacilityCategory::ECONOMY;
+        else
+            return FacilityCategory::ENVIRONMENT;
+    }
+    
+    /** 
+
+    bool FacilityType::operator==(FacilityType& other){
+        if( this->name != other.name || this->category != other.category ||
+            this->price != other.price || this->lifeQuality_score != other.lifeQuality_score ||
+            this->economy_score != other.economy_score || this->environment_score != other.environment_score)
+            return false;
+        return true;
+    }*/
 
     const string &FacilityType::getName() const{
         return this->name;
