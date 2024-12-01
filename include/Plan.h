@@ -25,6 +25,10 @@ class Plan {
         void printStatus();
         const vector<Facility*> &getFacilities() const;
         void addFacility(Facility* facility);
+        /*added methods */
+        void updatePlanConstractionFinalized(int facilityIndex);//@quastion, is passing it as a pointer the best here? why it and not by address, also what do you think of this name?
+        void updateStatus();
+        
         const string toString() const;
         ~Plan();
 

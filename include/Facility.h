@@ -3,6 +3,7 @@
 #include <vector>
 using std::string;
 using std::vector;
+#define CONSTRACTION_TIME_DONE 0
 
 enum class FacilityStatus {
     UNDER_CONSTRUCTIONS,

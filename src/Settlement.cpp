@@ -42,3 +42,21 @@ using std::string;
         Settlement* Settlement::clone(){
             return new Settlement(name,type);
         }
+
+        const int Settlement::getTypeCapacity() const{//@Qustion: is there a better why to implement this? seems to me that the enum needs to "hold" the capacity value somehow... phrhaps make it a struct?
+
+            int capacity = 0;//@NOTE: might need to added error handling/defult case later.
+            switch (this->type)
+            {
+            case SettlementType::VILLAGE:
+                capacity = VILLAGE_CONSTRACTION_CAPACITY;
+                break;
+            case SettlementType::CITY:
+                capacity = CITY_CONSTRACTION_CAPACITY;
+                break;
+            case SettlementType::METROPOLIS:
+                capacity = METROPOLIS_CONSTRACTION_CAPACITY;
+                break;
+            }
+            return capacity;
+        }

@@ -19,6 +19,7 @@ using std::vector;
             case FacilityCategory::ENVIRONMENT : return "environment";
             case FacilityCategory::LIFE_QUALITY : return "life quality";
         }
+        return "no category";
     }
     
     FacilityCategory FacilityType::parseFacilityCategory(const string& category){
@@ -88,8 +89,14 @@ using std::vector;
         return new Facility(*this);
     }
 
-    FacilityStatus Facility::step(){ return FacilityStatus::UNDER_CONSTRUCTIONS;} //implement!
-    
+    /*Preforms the logic of progressing the Constraction of the instace of the facility by one unit of time*/
+    FacilityStatus Facility::step(){
+        if(--timeLeft == CONSTRACTION_TIME_DONE)
+            status = FacilityStatus::OPERATIONAL;//change the status of the facility to operational when there is no more time left for the faciliti'es complation
+
+        return status;
+    }
+
     void Facility::setStatus(FacilityStatus status){
         this->status = status;
     }

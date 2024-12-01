@@ -49,7 +49,13 @@ using std::string;
     }
 
     void Plan::step(){
-
+        int  sizeOfConstractionList = underConstruction.size();
+        for(int facilityIndex = 0; facilityIndex <= sizeOfConstractionList; facilityIndex++)
+        { 
+                if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL)//if the facillity finsihed it's constractin
+                    updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
+        }
+        updateStatus();
     }
 
     void Plan::printStatus(){
@@ -79,4 +85,17 @@ using std::string;
 
     const string Plan::toString() const{
         return "toString of plan" + this->plan_id ;
+    }
+    void Plan::updatePlanConstractionFinalized(int facilityIndex){
+    
+    this->facilities.push_back(underConstruction[facilityIndex]);
+    this->underConstruction.erase(underConstruction.erase(underConstruction.begin() + facilityIndex));//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
+    }
+    //**updates the status of the plan, checks if there is a slot in the constraction list for another facility and updates the plan's status to indicate acordinglly */
+    void Plan::updateStatus(){
+        int size = underConstruction.size();
+        if(size < (this->getSettlement()).getTypeCapacity())
+            this->status = PlanStatus::AVALIABLE;
+        else
+          this->status = PlanStatus::BUSY;  
     }

@@ -97,7 +97,7 @@
         return *setPoint;
     }
     Plan &Simulation::getPlan(const int planID){
-        Plan *planPoint = & this->plans.back();
+        Plan *planPoint = nullptr;
         for(Plan p : this->plans){
             if(p.Plan::getID() == planID)
                 planPoint = &p;
@@ -122,6 +122,9 @@
     }
 
     void Simulation::step(){
+        for (Plan& p :this->plans){
+            p.step();
+        }
 
     }
     void Simulation::close(){

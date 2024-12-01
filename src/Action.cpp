@@ -21,9 +21,13 @@
     }
 
 //SimulateStep
+/**
+ * makes the simulation preform a passage of one unit of time. 
+ */
+    void SimulateStep::act(Simulation &simulation) {
+            simulation.step();
 
-
-    void SimulateStep::act(Simulation &simulation) {}                                   //implement!
+    }                                   //implement!                                 //implement!
 
     SimulateStep::SimulateStep(const int numOfSteps): numOfSteps(numOfSteps)
     {}
