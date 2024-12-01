@@ -13,7 +13,7 @@ using std::vector;
     const FacilityType& NaiveSelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
         return facilitiesOptions[++lastSelectedIndex];
     }
-    const string NaiveSelection::toString() const { }                                                                     //implement!
+    const string NaiveSelection::toString() const { return "Naive Selection Policy";}
     NaiveSelection *NaiveSelection::clone() const {
         return new NaiveSelection(*this);
     }
@@ -32,8 +32,8 @@ using std::vector;
         int facilityIndex = 0, balancedIndex;
 
         for(const FacilityType& f: facilitiesOptions){
-            int max = std::max(f.getEconomyScore()+ EconomyScore , f.getEnvironmentScore() + EnvironmentScore, f.getLifeQualityScore()+ LifeQualityScore );
-            int min = std::min(f.getEconomyScore()+ EconomyScore , f.getEnvironmentScore() + EnvironmentScore, f.getLifeQualityScore()+ LifeQualityScore );
+            int max = std::max(std::max( f.getEconomyScore()+ EconomyScore , f.getEnvironmentScore() + EnvironmentScore),f.getLifeQualityScore()+ LifeQualityScore  );
+            int min = std::min(std::min( f.getEconomyScore()+ EconomyScore , f.getEnvironmentScore() + EnvironmentScore),f.getLifeQualityScore()+ LifeQualityScore  );
             if( max - min < distance || facilityIndex == 0){
                 distance = max-min;
                 balancedIndex = facilityIndex;
@@ -43,7 +43,7 @@ using std::vector;
         return facilitiesOptions[balancedIndex];
 
     }
-    const string BalancedSelection::toString() const { }//implement!
+    const string BalancedSelection::toString() const { return "Balanced Selection Policy";}
     BalancedSelection *BalancedSelection::clone() const {
         return new BalancedSelection(*this);
     }
@@ -54,7 +54,8 @@ using std::vector;
 
     }
     const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
-        for(int index = lastSelectedIndex + 1; index < facilitiesOptions.size();index++){
+        int size = facilitiesOptions.size();
+        for(int index = lastSelectedIndex + 1; index < size;index++){
             if(facilitiesOptions[index].getCategory() == FacilityCategory::ECONOMY){
                 lastSelectedIndex = index;
                 return facilitiesOptions[index];
@@ -68,7 +69,7 @@ using std::vector;
         }
         return facilitiesOptions[++lastSelectedIndex];
     }
-    const string EconomySelection::toString() const { }                                                                 //implement!
+    const string EconomySelection::toString() const { return "Economy Selection Policy";}
     EconomySelection *EconomySelection::clone() const {
         return new EconomySelection(*this);
     }
@@ -79,7 +80,8 @@ using std::vector;
         
     }
     const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
-        for(int index = lastSelectedIndex + 1; index < facilitiesOptions.size();index++){
+        int size = facilitiesOptions.size();
+        for(int index = lastSelectedIndex + 1; index < size;index++){
             if(facilitiesOptions[index].getCategory() == FacilityCategory::ENVIRONMENT){
                 lastSelectedIndex = index;
                 return facilitiesOptions[index];
@@ -92,8 +94,8 @@ using std::vector;
             }
         }
         return facilitiesOptions[++lastSelectedIndex];
-    }              //implement!
-    const string SustainabilitySelection::toString() const { }                                                                 //implement!
+    }
+    const string SustainabilitySelection::toString() const { return "Sustainability Selection Policy";}
     SustainabilitySelection *SustainabilitySelection::clone() const {
         return new SustainabilitySelection(*this);
     }

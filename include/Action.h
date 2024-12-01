@@ -2,12 +2,17 @@
 #include <string>
 #include <vector>
 #include "Simulation.h"
+
+class Simulation;
+
 enum class SettlementType;
 enum class FacilityCategory;
 
 enum class ActionStatus{
     COMPLETED, ERROR
 };
+
+using namespace::std;
 
 class BaseAction{
     public:

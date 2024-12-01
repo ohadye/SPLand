@@ -26,7 +26,6 @@
  */
     void SimulateStep::act(Simulation &simulation) {
             simulation.step();
-
     }                                   //implement!                                 //implement!
 
     SimulateStep::SimulateStep(const int numOfSteps): numOfSteps(numOfSteps)
@@ -56,7 +55,8 @@
 
 //AddPlan
 
-    void AddPlan::act(Simulation &simulation) {}                                   //implement! 
+    void AddPlan::act(Simulation &simulation) {
+    }                                   //implement! 
 
     AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy): settlementName(settlementName), selectionPolicy(selectionPolicy) 
     {}

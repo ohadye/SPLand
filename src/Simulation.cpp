@@ -49,7 +49,72 @@
     }
 
     void Simulation::start(){
-        
+        Simulation::open();
+        //start reading commands in loop and creating corresponding actions
+        //stop when !isRunning
+        while(isRunning){
+            string input;
+            BaseAction* action;
+            std::vector<std::string> argumentLine;
+//            std::cout<<">";
+            getline(std::cin, input); //waits user command
+            argumentLine = Auxiliary::parseArguments(input);
+            if(argumentLine[0] == "step"){
+                action = new SimulateStep(stoi(argumentLine[1]));
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "plan"){
+                action = new AddPlan(argumentLine[1],argumentLine[2]);
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "settlement"){
+                action = new AddSettlement(argumentLine[1],Settlement::parseSettlementType(argumentLine[2]));
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "facility"){
+                action = new AddFacility(argumentLine[1],
+                                        FacilityType::parseFacilityCategory(argumentLine[2]),
+                                        stoi(argumentLine[3]),
+                                        stoi(argumentLine[4]),
+                                        stoi(argumentLine[5]),
+                                        stoi(argumentLine[6]));
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "planStatus"){
+                action = new PrintPlanStatus(stoi(argumentLine[1]));
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "changePolicy"){
+                action = new ChangePlanPolicy(stoi(argumentLine[1]), argumentLine[2]);
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "log"){
+                action = new PrintActionsLog();
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "close"){
+                action = new Close();
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "backup"){
+                action = new BackupSimulation();
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+            else if(argumentLine[0] == "restore"){
+                action = new RestoreSimulation();
+                action->act(*this);
+                actionsLog.push_back(action);
+            }
+        }
     }
     void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
         std::cout<<"add Plan accessed!" <<std::endl;
@@ -128,6 +193,15 @@
 
     }
     void Simulation::close(){
-
+        isRunning = false;
     }
-    void Simulation::open(){}
+    void Simulation::open(){
+        isRunning = true;
+    }
+
+    Simulation::~Simulation(){
+        for(BaseAction* a : actionsLog)
+            delete a;
+        for(Settlement* s : settlements)
+            delete s;
+    }

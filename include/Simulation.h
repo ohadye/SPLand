@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "Action.h"
 #include "Facility.h"
 #include "Plan.h"
 #include "Settlement.h"
@@ -27,6 +28,7 @@ class Simulation {
         void step();
         void close();
         void open();
+        ~Simulation();
 
     private:
         bool isRunning;
