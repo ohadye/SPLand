@@ -44,8 +44,10 @@
             return new BalancedSelection(0,0,0);
         else if(policy == "eco")
             return new EconomySelection();
-        else
+        else if(policy == "env")
             return new SustainabilitySelection();
+        else
+            return nullptr;
     }
 
     void Simulation::start(){
@@ -125,7 +127,7 @@
     }
     bool Simulation::addSettlement(Settlement* settlement){ 
         std::cout<<"add Settlement accessed!" <<std::endl;
-        if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement?
+        if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement? YES!
             return false;    
         settlements.push_back(settlement);
         return true;
@@ -161,6 +163,15 @@
         }
         return *setPoint;
     }
+
+    bool Simulation::doesPlanExist(const int planID){
+        for(const Plan& p : plans){
+            if(p.getID()==planID)
+                return true;
+        }
+        return false;
+    }
+
     Plan &Simulation::getPlan(const int planID){
         Plan *planPoint = nullptr;
         for(Plan p : this->plans){
@@ -168,6 +179,13 @@
                 planPoint = &p;
         }
         return *planPoint;
+    }
+
+    void Simulation::printLog(){
+        for(BaseAction* a: actionsLog){
+            cout<<a->toString()<<endl;
+        }
+        cout<<toString()<<endl;
     }
 
     const string Simulation::toString() const{

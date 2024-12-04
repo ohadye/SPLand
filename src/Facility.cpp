@@ -61,8 +61,15 @@ using std::vector;
     }
 
 //  Facility
-    Facility::Facility(const string &name, const string &settlementName, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
-        FacilityType::FacilityType(name,category,price,lifeQuality_score,environment_score,economy_score), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price)
+    Facility::Facility(const string &name, 
+                        const string &settlementName, 
+                        const FacilityCategory category, 
+                        const int price, 
+                        const int lifeQuality_score, 
+                        const int economy_score, 
+                        const int environment_score):
+        FacilityType::FacilityType(name,category,price,lifeQuality_score,environment_score,economy_score), 
+        settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price)
     {}
 
     Facility::Facility(const FacilityType &type, const string &settlementName):
@@ -106,5 +113,10 @@ using std::vector;
     }
 
     const string Facility::toString() const{
-        return FacilityType::getName() + " at " + settlementName;
+        string st = "facilityName: "+FacilityType::getName() + "facilityStatus: ";
+        if(status == FacilityStatus::OPERATIONAL)
+            st.append("OPERATIONAL");
+        else    
+            st.append("UNDER_CONSTRUCTION");
+        return st;
     }

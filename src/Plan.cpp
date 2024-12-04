@@ -57,7 +57,6 @@ using std::string;
         }
         updateStatus();
     }
-
     void Plan::printStatus(){
         std::string st;
         if(status == PlanStatus::AVALIABLE)
@@ -84,8 +83,20 @@ using std::string;
     }
 
     const string Plan::toString() const{
-        return "toString of plan" + this->plan_id ;
-    }
+        string st = "PlanID:" +plan_id;
+        st.append("\nplanStatus: ");
+        string life = ""+life_quality_score, eco=""+economy_score, env=""+environment_score;
+        if(status == PlanStatus::AVALIABLE)
+            st.append("AVAILABLE");
+        else    
+            st.append("BUSY");
+        st.append("\nselectionPolicy: "+selectionPolicy->toString()+
+        "\nLifeQualityScore: "+life+"\nEconomyScore: "+eco+"\nEnvironmentScore: "+env);
+        for(Facility* f: facilities){
+            st.append("\n"+f->toString());
+        }
+        return  st;
+    }   
     void Plan::updatePlanConstractionFinalized(int facilityIndex){
     
     this->facilities.push_back(underConstruction[facilityIndex]);

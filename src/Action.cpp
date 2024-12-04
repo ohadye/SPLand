@@ -1,4 +1,5 @@
 #include "../include/Action.h"
+#include <iostream>
 
 
 
@@ -25,8 +26,9 @@
  * makes the simulation preform a passage of one unit of time. 
  */
     void SimulateStep::act(Simulation &simulation) {
-            simulation.step();
-    }                                   //implement!                                 //implement!
+           for(int i=0;i<numOfSteps;i++) simulation.step();
+           complete();
+    }
 
     SimulateStep::SimulateStep(const int numOfSteps): numOfSteps(numOfSteps)
     {}
@@ -56,7 +58,14 @@
 //AddPlan
 
     void AddPlan::act(Simulation &simulation) {
-    }                                   //implement! 
+        SelectionPolicy* sp = Simulation::parseSelectionPolicy(selectionPolicy);
+        if(sp == nullptr || !simulation.isSettlementExists(settlementName)){
+            error("Cannot create this plan");
+            return;
+        }
+        simulation.addPlan(simulation.getSettlement(settlementName), sp);
+        complete();
+    }
 
     AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy): settlementName(settlementName), selectionPolicy(selectionPolicy) 
     {}
@@ -84,7 +93,14 @@
 
 //AddSettlement
 
-    void AddSettlement::act(Simulation &simulation) {}                                   //implement! 
+    void AddSettlement::act(Simulation &simulation) {
+        if(simulation.isSettlementExists(settlementName)){
+            error("Settelment already exists");
+            return;
+        }
+        simulation.addSettlement(new Settlement(settlementName,settlementType)); //why does this return bool?
+        complete();
+    }
 
     AddSettlement::AddSettlement(const string &settlementName, SettlementType settlementType): settlementName(settlementName), settlementType(settlementType) 
     {}
@@ -111,14 +127,21 @@
     }
 
 //AddFacility
-    void AddFacility::act(Simulation &simulation) {}                                   //implement! 
+    void AddFacility::act(Simulation &simulation) {
+        if(simulation.doesFacilityExist(facilityName)){
+            error("Facility already exists");
+            return;
+        }
+        simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
+        complete();
+    }
 
     AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
         facilityName(facilityName), facilityCategory(facilityCategory), price(price), lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(economyScore)
     {}
 
     AddFacility::AddFacility(const AddFacility& other): facilityName(other.facilityName), facilityCategory(other.facilityCategory), price(other.price),
-        lifeQualityScore(other.lifeQualityScore), economyScore(other.economyScore), environmentScore(other.economyScore)
+        lifeQualityScore(other.lifeQualityScore), economyScore(other.economyScore), environmentScore(other.environmentScore)
     {
         if(other.getStatus() == ActionStatus::COMPLETED)
             complete();
@@ -140,7 +163,15 @@
     }
 
 //PrintPlanStatus
-    void PrintPlanStatus::act(Simulation &simulation) {}                                   //implement!
+    void PrintPlanStatus::act(Simulation &simulation) {
+        if(!simulation.doesPlanExist(planId)){
+            error("Plan doesn’t exist");
+            return;
+        }
+        Plan& p = simulation.getPlan(planId);
+        std::cout<<p.toString()<<std::endl;
+        complete();
+    }
 
     PrintPlanStatus::PrintPlanStatus(const int planId): planId(planId)
     {}
@@ -153,7 +184,7 @@
     }
     
     const string PrintPlanStatus::toString() const {
-        std::string st = "Prrint plan status: ";
+        std::string st = "Print plan status: ";
         std::string num = ""+ planId;                                       //theres a better way to do this
         if (BaseAction::getStatus() == ActionStatus::ERROR){
             st.append("error! "+ BaseAction::getErrorMsg());
@@ -168,7 +199,14 @@
     }
 
 //ChangePlanPolicy
-    void ChangePlanPolicy::act(Simulation &simulation) {}                                   //implement!
+    void ChangePlanPolicy::act(Simulation &simulation) {
+        SelectionPolicy* sp = Simulation::parseSelectionPolicy(newPolicy);
+        if(!simulation.doesPlanExist(planId) || sp == nullptr ){
+            error("Cannot change selection policy");
+            return;
+        }
+        complete();
+    }                                   //implement!
 
     ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy): planId(planId), newPolicy(newPolicy)
     {}
@@ -196,7 +234,10 @@
     }
 
 //PrintActionsLog
-    void PrintActionsLog::act(Simulation &simulation) {}                                   //implement!
+    void PrintActionsLog::act(Simulation &simulation) {
+        simulation.printLog();
+        complete();
+    }                                   //implement!
 
     PrintActionsLog::PrintActionsLog()
     {}
@@ -222,7 +263,10 @@
     }
 
 //Close
-    void Close::act(Simulation &simulation) {}                                   //implement!
+    void Close::act(Simulation &simulation) {
+        simulation.close();
+        complete();
+    }                                   //implement!
 
     Close::Close()
     {}
