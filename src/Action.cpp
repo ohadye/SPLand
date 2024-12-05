@@ -1,5 +1,6 @@
 #include "../include/Action.h"
 #include <iostream>
+#include <sstream>
 
 
 
@@ -41,15 +42,15 @@
     }
     
     const string SimulateStep::toString() const {
-        std::string st = "Simulate step: ";
-        std::string num = ""+ numOfSteps;                                       //theres a better way to do this
+        std::ostringstream st;
+        st<< "Simulate step: ";
         if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
+            st<<"error! "<< BaseAction::getErrorMsg();
         }
         else{
-            st.append("completed! performed "+num+" steps.");
+            st<<"completed! performed "<< numOfSteps<<" steps.";
         }
-        return st;
+        return st.str();
     }
     SimulateStep *SimulateStep::clone() const {
         return new SimulateStep(*this);
@@ -63,6 +64,7 @@
             error("Cannot create this plan");
             return;
         }
+        cout<<"selection Policy is "+sp->toString()<<endl;
         simulation.addPlan(simulation.getSettlement(settlementName), sp);
         complete();
     }
@@ -168,8 +170,7 @@
             error("Plan doesn’t exist");
             return;
         }
-        Plan& p = simulation.getPlan(planId);
-        std::cout<<p.toString()<<std::endl;
+        std::cout<<simulation.getPlan(planId).toString()<<std::endl;
         complete();
     }
 

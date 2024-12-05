@@ -58,7 +58,7 @@
             string input;
             BaseAction* action;
             std::vector<std::string> argumentLine;
-//            std::cout<<">";
+            std::cout<<">";
             getline(std::cin, input); //waits user command
             argumentLine = Auxiliary::parseArguments(input);
             if(argumentLine[0] == "step"){
@@ -173,12 +173,12 @@
     }
 
     Plan &Simulation::getPlan(const int planID){
-        Plan *planPoint = nullptr;
-        for(Plan p : this->plans){
-            if(p.Plan::getID() == planID)
-                planPoint = &p;
+        for(Plan& p : plans){
+            if(p.getID() == planID)
+                return p;
         }
-        return *planPoint;
+        Plan& p = plans.back();             //dont know if theres a better practice
+        return p;
     }
 
     void Simulation::printLog(){
@@ -199,7 +199,7 @@
         }
         st.append("and plans:\n");
         for(Plan p: plans){
-            st.append(std::to_string(p.getID())+" in settlement "+p.getSettlement().getName()+"\n");
+            st.append(p.toString() + "\n");
         }
         return st;
     }

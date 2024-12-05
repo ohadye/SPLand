@@ -40,11 +40,10 @@ using std::vector;
             }
             facilityIndex++;
         }
-        FacilityType f = facilitiesOptions[balancedIndex];
-        EconomyScore+=f.getEconomyScore();
-        EnvironmentScore+=f.getEnvironmentScore();
-        LifeQualityScore+=f.getLifeQualityScore();
-        return f;
+        EconomyScore+=facilitiesOptions[balancedIndex].getEconomyScore();
+        EnvironmentScore+=facilitiesOptions[balancedIndex].getEnvironmentScore();
+        LifeQualityScore+=facilitiesOptions[balancedIndex].getLifeQualityScore();
+        return facilitiesOptions[balancedIndex];
 
     }
     const string BalancedSelection::toString() const { return "bal";}

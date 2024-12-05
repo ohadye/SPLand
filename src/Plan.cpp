@@ -1,6 +1,8 @@
 #include "../include/Plan.h"
 
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 using std::vector;
 using std::string;
 
@@ -50,12 +52,25 @@ using std::string;
 
     void Plan::step(){
         int  sizeOfConstractionList = underConstruction.size();
-        for(int facilityIndex = 0; facilityIndex <= sizeOfConstractionList; facilityIndex++)
+        for(int facilityIndex = 0; facilityIndex < sizeOfConstractionList; facilityIndex++)
         { 
-                if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL)//if the facillity finsihed it's constractin
-                    updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
+            if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL){//if the facillity finsihed it's constractin
+                facilities.push_back(underConstruction[facilityIndex]);
+ //               updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
+            }
         }
+        underConstruction.erase(std::remove_if(underConstruction.begin(),underConstruction.end(),[](Facility* f)-> bool{
+           return f->Facility::getStatus()==FacilityStatus::OPERATIONAL;
+        }),underConstruction.end());
         updateStatus();
+        while(this->status == PlanStatus::AVALIABLE){
+            Facility *f = new Facility(selectionPolicy->selectFacility(facilityOptions), this->settlement.getName());
+            life_quality_score+=f->getLifeQualityScore();
+            economy_score+=f->getEconomyScore();
+            environment_score+=f->getEnvironmentScore();
+            underConstruction.push_back(f);
+            updateStatus();
+        }
     }
     void Plan::printStatus(){
         std::string st;
@@ -83,24 +98,24 @@ using std::string;
     }
 
     const string Plan::toString() const{
-        string st = "PlanID:" +plan_id;
-        st.append("\nplanStatus: ");
-        string life = ""+life_quality_score, eco=""+economy_score, env=""+environment_score;
+        std::ostringstream st;
+        st << "PlanID:" <<plan_id << "\nplanStatus: ";
         if(status == PlanStatus::AVALIABLE)
-            st.append("AVAILABLE");
+            st << "AVAILABLE";
         else    
-            st.append("BUSY");
-        st.append("\nselectionPolicy: "+selectionPolicy->toString()+
-        "\nLifeQualityScore: "+life+"\nEconomyScore: "+eco+"\nEnvironmentScore: "+env);
+            st<<"BUSY";
+        st<<"\nselectionPolicy: " << selectionPolicy->toString();
+        st<<"\nLifeQualityScore: "<< life_quality_score <<"\nEconomyScore: "<< economy_score <<"\nEnvironmentScore: "<<environment_score;
         for(Facility* f: facilities){
-            st.append("\n"+f->toString());
+            st<<"\n"<<f->toString();
         }
-        return  st;
+        return  st.str();
     }   
     void Plan::updatePlanConstractionFinalized(int facilityIndex){
     
-    this->facilities.push_back(underConstruction[facilityIndex]);
-    this->underConstruction.erase(underConstruction.erase(underConstruction.begin() + facilityIndex));//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
+        this->facilities.push_back(underConstruction[facilityIndex]);
+        this->underConstruction.erase(underConstruction.begin() + facilityIndex);//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
+        std::cout<<toString()<<std::endl;
     }
     //**updates the status of the plan, checks if there is a slot in the constraction list for another facility and updates the plan's status to indicate acordinglly */
     void Plan::updateStatus(){
