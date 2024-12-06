@@ -1,4 +1,4 @@
-#include "../include/Action.h"
+#include "Action.h"
 
 
 
@@ -12,13 +12,20 @@
     void BaseAction::complete(){
         status = ActionStatus::COMPLETED;
     }
+    /**
+     * @brief 
+     * @note for now I put the printing of the error messge inside this function aswell
+     * @param errorMsg 
+     */
     void BaseAction::error(string errorMsg){
         status = ActionStatus::ERROR;
         this->errorMsg = errorMsg;
+        std::cout << ERROR_MSG_PREFIX << errorMsg << endl;/**@warning might not be good pracice to print here */
     }
     const string &BaseAction::getErrorMsg() const{
         return errorMsg;
     }
+
 
 //SimulateStep
 /**
@@ -26,7 +33,7 @@
  */
     void SimulateStep::act(Simulation &simulation) {
             simulation.step();
-    }                                   //implement!                                 //implement!
+    }                                   //implemented
 
     SimulateStep::SimulateStep(const int numOfSteps): numOfSteps(numOfSteps)
     {}
@@ -56,7 +63,7 @@
 //AddPlan
 
     void AddPlan::act(Simulation &simulation) {
-    }                                   //implement! 
+    }                                
 
     AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy): settlementName(settlementName), selectionPolicy(selectionPolicy) 
     {}
@@ -84,8 +91,23 @@
 
 //AddSettlement
 
-    void AddSettlement::act(Simulation &simulation) {}                                   //implement! 
-
+    void AddSettlement::act(Simulation &simulation) {
+        if(&simulation.getSettlement(this->settlementName)!= nullptr)//checks if there is an instance of a settlemnt with the given name
+        {
+            error(ATTEMTING_TO_CREATE_EXSISTING_SETTLEMENT_ERROR_MSG);
+        }
+        else
+        {
+            simulation.addSettlement(new Settlement(this->settlementName, this->settlementType));
+            complete();
+        }
+    }                        
+/**
+ * @brief creates an instance of AddSettlemnt Action 
+ * @if the settelment name is already take print an error
+ * 
+ * @param simulation simulation
+ */
     AddSettlement::AddSettlement(const string &settlementName, SettlementType settlementType): settlementName(settlementName), settlementType(settlementType) 
     {}
 
@@ -110,8 +132,23 @@
         return new AddSettlement(*this);
     }
 
-//AddFacility
-    void AddFacility::act(Simulation &simulation) {}                                   //implement! 
+    /**
+     * @brief – This action creates and stores a new facility(actually FacilityType). The provided
+        category integer value will be used to set the corresponding category enum value.
+     * 
+     * @param simulation 
+     */
+    void AddFacility::act(Simulation &simulation) {
+        
+        if(simulation.doesFacilityExist(this->facilityName))//if the facility type exist in simulation
+        {
+            error(ATTEMTING_TO_CREATE_EXSISTING_FACILITY_ERROR_MSG);
+        }
+        else
+        {//@Note 
+            simulation.addFacility(*new FacilityType(this->facilityName, this->facilityCategory,this->price, this->lifeQualityScore, this->economyScore, this->environmentScore));
+        }
+    }
 
     AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
         facilityName(facilityName), facilityCategory(facilityCategory), price(price), lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(economyScore)

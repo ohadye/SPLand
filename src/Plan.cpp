@@ -49,13 +49,24 @@ using std::string;
     }
 
     void Plan::step(){
+        
+        //stage one of the SimulateStep() scheme 
+        while(this->status == PlanStatus::AVALIABLE)
+        {
+            FacilityType selectedType = selectionPolicy->selectFacility(facilityOptions);
+            Facility *constracted = new Facility(selectedType, this->getSettlement().getName());
+            delete(&selectedType);//@Qustion: do I need to delete it here? or does it gets deleted outside of the ACframe?
+            updateStatus();//@note if there is time, create an function that attempt to create a constraction and updates the status as well (attemptConstraction())
+        }
         int  sizeOfConstractionList = underConstruction.size();
         for(int facilityIndex = 0; facilityIndex <= sizeOfConstractionList; facilityIndex++)
         { 
-                if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL)//if the facillity finsihed it's constractin
-                    updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
+            if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL)//if the facillity finsihed it's constractin
+            {
+                finalizeConstraction(facilityIndex);//moves the facility to the correct Vector 
+            }
         }
-        updateStatus();
+        
     }
 
     void Plan::printStatus(){
@@ -86,10 +97,11 @@ using std::string;
     const string Plan::toString() const{
         return "toString of plan" + this->plan_id ;
     }
-    void Plan::updatePlanConstractionFinalized(int facilityIndex){
+    void Plan::finalizeConstraction(int facilityIndex){
     
-    this->facilities.push_back(underConstruction[facilityIndex]);
-    this->underConstruction.erase(underConstruction.erase(underConstruction.begin() + facilityIndex));//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
+        this->facilities.push_back(underConstruction[facilityIndex]);
+        this->underConstruction.erase(underConstruction.begin() + facilityIndex);//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
+        this->updateStatus();
     }
     //**updates the status of the plan, checks if there is a slot in the constraction list for another facility and updates the plan's status to indicate acordinglly */
     void Plan::updateStatus(){

@@ -106,7 +106,7 @@
             }
             else if(argumentLine[0] == "backup"){
                 action = new BackupSimulation();
-                action->act(*this);
+                action->act(*this);//@Quastion: how handles the COMPLATED/ERROR MESSAGE? I think it should be here
                 actionsLog.push_back(action);
             }
             else if(argumentLine[0] == "restore"){
@@ -156,7 +156,7 @@
     Settlement &Simulation::getSettlement(const string &settlementName){
         Settlement *setPoint =  nullptr;//@todo check if this is good practice
         for(Settlement* set : this->settlements){
-            if(set->Settlement::getName() == settlementName)
+            if(set->getName() == settlementName)
                 setPoint = set;
         }
         return *setPoint;

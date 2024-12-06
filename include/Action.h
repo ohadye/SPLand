@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include <vector>
 #include "Simulation.h"
-
+#define ERROR_MSG_PREFIX "Error: "
+#define ATTEMTING_TO_CREATE_EXSISTING_SETTLEMENT_ERROR_MSG  "Settlement already exists"
+#define ATTEMTING_TO_CREATE_EXSISTING_FACILITY_ERROR_MSG "Facility already exists"
 class Simulation;
 
 enum class SettlementType;
@@ -27,17 +30,32 @@ class BaseAction{
         void complete();
         void error(string errorMsg);
         const string &getErrorMsg() const;
+        void setActionStatus(ActionStatus ActionStatus);
 
     private:
         string errorMsg;
         ActionStatus status;
 };
-
+/**
+ * @brief Simulates the passage of time for the simulation
+ * 
+ */
 class SimulateStep : public BaseAction {
 
     public:
+    /**
+     * @brief Construct a new Simulate Step object, an instance represent the pasage of time for the Simulations 
+     * 
+     * @param numOfSteps the number of units of time that passes 
+     * @example SimulatesStep 3, 3 units of time passed for the simulation once act is called.
+     */
         SimulateStep(const int numOfSteps);
         SimulateStep(const SimulateStep& other);
+        /**
+         * @brief preform the passage of time for the simulating 
+         * 
+         * @param simulation the simulation that the time pass for.
+         */
         void act(Simulation &simulation) override;
         const string toString() const override;
         SimulateStep *clone() const override;
