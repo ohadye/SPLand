@@ -44,8 +44,10 @@
             return new BalancedSelection(0,0,0);
         else if(policy == "eco")
             return new EconomySelection();
-        else
+        else if(policy == "env")
             return new SustainabilitySelection();
+        else
+            return nullptr;
     }
 
     void Simulation::start(){
@@ -56,7 +58,7 @@
             string input;
             BaseAction* action;
             std::vector<std::string> argumentLine;
-//            std::cout<<">";
+            std::cout<<">";
             getline(std::cin, input); //waits user command
             argumentLine = Auxiliary::parseArguments(input);
             if(argumentLine[0] == "step"){
@@ -125,7 +127,7 @@
     }
     bool Simulation::addSettlement(Settlement* settlement){ 
         std::cout<<"add Settlement accessed!" <<std::endl;
-        if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement?
+        if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement? YES!
             return false;    
         settlements.push_back(settlement);
         return true;
@@ -161,13 +163,29 @@
         }
         return *setPoint;
     }
-    Plan &Simulation::getPlan(const int planID){
-        Plan *planPoint = nullptr;
-        for(Plan p : this->plans){
-            if(p.Plan::getID() == planID)
-                planPoint = &p;
+
+    bool Simulation::doesPlanExist(const int planID){
+        for(const Plan& p : plans){
+            if(p.getID()==planID)
+                return true;
         }
-        return *planPoint;
+        return false;
+    }
+
+    Plan &Simulation::getPlan(const int planID){
+        for(Plan& p : plans){
+            if(p.getID() == planID)
+                return p;
+        }
+        Plan& p = plans.back();             //dont know if theres a better practice
+        return p;
+    }
+
+    void Simulation::printLog(){
+        for(BaseAction* a: actionsLog){
+            cout<<a->toString()<<endl;
+        }
+        cout<<toString()<<endl;
     }
 
     const string Simulation::toString() const{
@@ -181,7 +199,7 @@
         }
         st.append("and plans:\n");
         for(Plan p: plans){
-            st.append(std::to_string(p.getID())+" in settlement "+p.getSettlement().getName()+"\n");
+            st.append(p.toString() + "\n");
         }
         return st;
     }

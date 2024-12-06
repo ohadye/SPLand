@@ -1,7 +1,7 @@
-all: clean compile link run
+all: clean compile link
 
 run: bin/SPLand
-	bin/SPLand config_file.txt
+	bin/SPLand
 
 compile: 
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Auxiliary.o src/Auxiliary.cpp

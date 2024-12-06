@@ -13,7 +13,7 @@ using std::vector;
     const FacilityType& NaiveSelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
         return facilitiesOptions[++lastSelectedIndex];
     }
-    const string NaiveSelection::toString() const { return "Naive Selection Policy";}
+    const string NaiveSelection::toString() const { return "nve";}
     NaiveSelection *NaiveSelection::clone() const {
         return new NaiveSelection(*this);
     }
@@ -40,10 +40,13 @@ using std::vector;
             }
             facilityIndex++;
         }
+        EconomyScore+=facilitiesOptions[balancedIndex].getEconomyScore();
+        EnvironmentScore+=facilitiesOptions[balancedIndex].getEnvironmentScore();
+        LifeQualityScore+=facilitiesOptions[balancedIndex].getLifeQualityScore();
         return facilitiesOptions[balancedIndex];
 
     }
-    const string BalancedSelection::toString() const { return "Balanced Selection Policy";}
+    const string BalancedSelection::toString() const { return "bal";}
     BalancedSelection *BalancedSelection::clone() const {
         return new BalancedSelection(*this);
     }
@@ -69,7 +72,7 @@ using std::vector;
         }
         return facilitiesOptions[++lastSelectedIndex];
     }
-    const string EconomySelection::toString() const { return "Economy Selection Policy";}
+    const string EconomySelection::toString() const { return "eco";}
     EconomySelection *EconomySelection::clone() const {
         return new EconomySelection(*this);
     }
@@ -95,7 +98,7 @@ using std::vector;
         }
         return facilitiesOptions[++lastSelectedIndex];
     }
-    const string SustainabilitySelection::toString() const { return "Sustainability Selection Policy";}
+    const string SustainabilitySelection::toString() const { return "env";}
     SustainabilitySelection *SustainabilitySelection::clone() const {
         return new SustainabilitySelection(*this);
     }
