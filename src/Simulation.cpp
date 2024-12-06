@@ -3,6 +3,11 @@
 #include <iostream>
 #include <fstream>
 
+    /**
+     * @brief Construct a new Simulation:: Simulation object
+     * 
+     * @param configFilePath File path of the 
+     */
     Simulation::Simulation(const string &configFilePath) : isRunning(false), 
                                                             planCounter(0), 
                                                             actionsLog(), 
@@ -61,63 +66,50 @@
             std::cout<<">";
             getline(std::cin, input); //waits user command
             argumentLine = Auxiliary::parseArguments(input);
-            if(argumentLine[0] == "step"){
+            string user_command = argumentLine[0];
+
+            if(user_command == STEP_CMD_SAVED_WORD)
                 action = new SimulateStep(stoi(argumentLine[1]));
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "plan"){
+    
+            else if(user_command == ADD_PLAN_CMD_SAVED_WORD)
                 action = new AddPlan(argumentLine[1],argumentLine[2]);
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "settlement"){
+
+            else if(user_command == ADD_SETTLEMENT_CMD_SAVED_WORD)
                 action = new AddSettlement(argumentLine[1],Settlement::parseSettlementType(argumentLine[2]));
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "facility"){
+            
+            else if(user_command == ADD_FACILITY_CMD_SAVED_WORD){
                 action = new AddFacility(argumentLine[1],
-                                        FacilityType::parseFacilityCategory(argumentLine[2]),
+                                        FacilityType::parseFacilityCategory(argumentLine[2]),//@todo need to check if there is a facilitycategory provided exsit
                                         stoi(argumentLine[3]),
                                         stoi(argumentLine[4]),
                                         stoi(argumentLine[5]),
                                         stoi(argumentLine[6]));
-                action->act(*this);
-                actionsLog.push_back(action);
             }
-            else if(argumentLine[0] == "planStatus"){
+            else if(user_command == PRINT_PLAN_STATUS_CMD_SAVED_WORD)
                 action = new PrintPlanStatus(stoi(argumentLine[1]));
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "changePolicy"){
+ 
+            else if(user_command == CHANGE_POLICY_PLAN_CMD_SAVED_WORD)
                 action = new ChangePlanPolicy(stoi(argumentLine[1]), argumentLine[2]);
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "log"){
+             
+            else if(user_command == PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD)
                 action = new PrintActionsLog();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "close"){
+           
+            else if(user_command == CLOSE_CMD_SAVED_WORD)
                 action = new Close();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "backup"){
+            
+            else if(user_command == BACKUP_SIMULATION_CMD_SAVED_WORD)
                 action = new BackupSimulation();
-                action->act(*this);//@Quastion: how handles the COMPLATED/ERROR MESSAGE? I think it should be here
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "restore"){
+           
+            else if(user_command == RESSTORE_CMD_SAVED_WORD)
                 action = new RestoreSimulation();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
+            //@todo check is there is a need to check if the command given doesn't exsits
+            action->act(*this);//preform action act, @note responsible ONLY FOR:checks if the action is valid (using functions from simulation), adding the new element in simulation if able, change the action status. 
+            addAction(action);//addes action to the action log list
+            if(action->getStatus() == ActionStatus::ERROR)//prints the error message if there action resulted in an error @todo implement the toString
+                std::cout << action->toString();
         }
     }
+
     void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
         std::cout<<"add Plan accessed!" <<std::endl;
         plans.push_back(Plan(planCounter++, settlement, selectionPolicy, this->facilitiesOptions));
@@ -127,7 +119,7 @@
     }
     bool Simulation::addSettlement(Settlement* settlement){ 
         std::cout<<"add Settlement accessed!" <<std::endl;
-        if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement? YES!
+        if(doesSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement? YES!
             return false;    
         settlements.push_back(settlement);
         return true;
@@ -148,7 +140,7 @@
         return false;
     }
 
-    bool Simulation::isSettlementExists(const string &settlementName){
+    bool Simulation::doesSettlementExists(const string &settlementName){
         for(Settlement* set : this->settlements){
             if(set->Settlement::getName() == settlementName)
                 return true;

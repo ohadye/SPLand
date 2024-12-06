@@ -4,6 +4,9 @@
 #include "../include/Action.h"
 #include <iostream>
 #include <sstream>
+<<<<<<< HEAD
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
+=======
 >>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
 
 
@@ -39,8 +42,14 @@
  */
     void SimulateStep::act(Simulation &simulation) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             simulation.step();
     }                                   //implemented
+=======
+           for(int i=0;i<numOfSteps;i++) simulation.step();
+           complete();
+    }
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
 =======
            for(int i=0;i<numOfSteps;i++) simulation.step();
            complete();
@@ -76,8 +85,11 @@
 
     void AddPlan::act(Simulation &simulation) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     }                                
 =======
+=======
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
         SelectionPolicy* sp = Simulation::parseSelectionPolicy(selectionPolicy);
         if(sp == nullptr || !simulation.isSettlementExists(settlementName)){
             error("Cannot create this plan");
@@ -87,6 +99,9 @@
         simulation.addPlan(simulation.getSettlement(settlementName), sp);
         complete();
     }
+<<<<<<< HEAD
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
+=======
 >>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
 
     AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy): settlementName(settlementName), selectionPolicy(selectionPolicy) 
@@ -117,6 +132,7 @@
 
     void AddSettlement::act(Simulation &simulation) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         if(&simulation.getSettlement(this->settlementName)!= nullptr)//checks if there is an instance of a settlemnt with the given name
         {
             error(ATTEMTING_TO_CREATE_EXSISTING_SETTLEMENT_ERROR_MSG);
@@ -134,6 +150,8 @@
  * @param simulation simulation
  */
 =======
+=======
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
         if(simulation.isSettlementExists(settlementName)){
             error("Settelment already exists");
             return;
@@ -193,6 +211,9 @@
         }
         simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
         complete();
+<<<<<<< HEAD
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
+=======
 >>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
     }
 

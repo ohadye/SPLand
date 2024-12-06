@@ -51,6 +51,7 @@ using std::string;
     }
 
     void Plan::step(){
+<<<<<<< HEAD
         
         //stage one of the SimulateStep() scheme 
         while(this->status == PlanStatus::AVALIABLE)
@@ -76,6 +77,16 @@ using std::string;
  //               updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
             }
         }
+=======
+        int  sizeOfConstractionList = underConstruction.size();
+        for(int facilityIndex = 0; facilityIndex < sizeOfConstractionList; facilityIndex++)
+        { 
+            if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL){//if the facillity finsihed it's constractin
+                facilities.push_back(underConstruction[facilityIndex]);
+ //               updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
+            }
+        }
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
         underConstruction.erase(std::remove_if(underConstruction.begin(),underConstruction.end(),[](Facility* f)-> bool{
            return f->Facility::getStatus()==FacilityStatus::OPERATIONAL;
         }),underConstruction.end());
@@ -88,6 +99,9 @@ using std::string;
             underConstruction.push_back(f);
             updateStatus();
         }
+<<<<<<< HEAD
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
+=======
 >>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
     }
     void Plan::printStatus(){
@@ -117,6 +131,7 @@ using std::string;
 
     const string Plan::toString() const{
 <<<<<<< HEAD
+<<<<<<< HEAD
         return "toString of plan" + this->plan_id ;
     }
     void Plan::finalizeConstraction(int facilityIndex){
@@ -125,6 +140,8 @@ using std::string;
         this->underConstruction.erase(underConstruction.begin() + facilityIndex);//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
         this->updateStatus();
 =======
+=======
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
         std::ostringstream st;
         st << "PlanID:" <<plan_id << "\nplanStatus: ";
         if(status == PlanStatus::AVALIABLE)
@@ -143,6 +160,9 @@ using std::string;
         this->facilities.push_back(underConstruction[facilityIndex]);
         this->underConstruction.erase(underConstruction.begin() + facilityIndex);//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
         std::cout<<toString()<<std::endl;
+<<<<<<< HEAD
+>>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
+=======
 >>>>>>> 81f52938d2fb1dc6f1f039aad621d494c2901f7f
     }
     //**updates the status of the plan, checks if there is a slot in the constraction list for another facility and updates the plan's status to indicate acordinglly */
