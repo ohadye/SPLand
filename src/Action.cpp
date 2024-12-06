@@ -135,11 +135,12 @@
             return;
         }
         simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
+        cout<<facilityName<<" "<<price<<" "<<lifeQualityScore<<" "<<economyScore<<" "<<environmentScore<<endl;
         complete();
     }
 
     AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
-        facilityName(facilityName), facilityCategory(facilityCategory), price(price), lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(economyScore)
+        facilityName(facilityName), facilityCategory(facilityCategory), price(price), lifeQualityScore(lifeQualityScore), economyScore(economyScore), environmentScore(environmentScore)
     {}
 
     AddFacility::AddFacility(const AddFacility& other): facilityName(other.facilityName), facilityCategory(other.facilityCategory), price(other.price),
@@ -250,12 +251,12 @@
     }
     
     const string PrintActionsLog::toString() const {
-        std::string st = "Print Actions Log: ";
+        std::string st;
         if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
+            st.append("ERROR"+ BaseAction::getErrorMsg());
         }
         else{
-            st.append("completed!");
+            st.append("COMPLETE");
         }
         return st;
     }

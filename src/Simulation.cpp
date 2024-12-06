@@ -119,21 +119,21 @@
         }
     }
     void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
-        std::cout<<"add Plan accessed!" <<std::endl;
+//        std::cout<<"add Plan accessed!" <<std::endl;
         plans.push_back(Plan(planCounter++, settlement, selectionPolicy, this->facilitiesOptions));
     }
     void Simulation::addAction(BaseAction *action){
         actionsLog.push_back(action);
     }
     bool Simulation::addSettlement(Settlement* settlement){ 
-        std::cout<<"add Settlement accessed!" <<std::endl;
+//        std::cout<<"add Settlement accessed!" <<std::endl;
         if(isSettlementExists(settlement->getName()))           // is this my job to check or action AddSettlement? YES!
             return false;    
         settlements.push_back(settlement);
         return true;
     }
     bool Simulation::addFacility(FacilityType facility){
-        std::cout<<"add Facility accessed!" <<std::endl;
+//        std::cout<<"add Facility accessed!" <<std::endl;
         if(Simulation::doesFacilityExist(facility.getName()))   // is this my job to check or action AddFacility?
             return false;
         facilitiesOptions.push_back(facility);
@@ -185,25 +185,24 @@
         for(BaseAction* a: actionsLog){
             cout<<a->toString()<<endl;
         }
-        cout<<toString()<<endl;
+//        cout<<toString()<<endl;
     }
-
     const string Simulation::toString() const{
-        string st = "Simulation: \nfacility options:\n" ;
+        ostringstream s;
+        s<<"Simulation: \nfacility options:\n";
         for(FacilityType f : facilitiesOptions){
-            st.append(f.getName() + "\n");
+            s<<f.getName()<<" "<<f.getCost()<<" "<<f.getLifeQualityScore()<<" "<<f.getEconomyScore()<<" "<<f.getEnvironmentScore()<<"\n";
         }
-        st.append("settlements:\n");
-        for(Settlement* s: settlements){
-            st.append(s->getName());
+        s<<"settlements:\n";
+        for(Settlement* set: settlements){
+            s<<set->getName();
         }
-        st.append("and plans:\n");
-        for(Plan p: plans){
-            st.append(p.toString() + "\n");
+        s<<"and plans:\n";
+        for(const Plan &p: plans){
+            s<<p.toString() << "\n";
         }
-        return st;
+        return s.str();
     }
-
     void Simulation::step(){
         for (Plan& p :this->plans){
             p.step();
@@ -216,7 +215,6 @@
     void Simulation::open(){
         isRunning = true;
     }
-
     Simulation::~Simulation(){
         for(BaseAction* a : actionsLog)
             delete a;

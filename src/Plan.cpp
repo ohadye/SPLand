@@ -115,7 +115,7 @@ using std::string;
     
         this->facilities.push_back(underConstruction[facilityIndex]);
         this->underConstruction.erase(underConstruction.begin() + facilityIndex);//@quastion: does this removes the pointer of the facility from underconstraction and addes the facility by address to the facilities vector as needed? 
-        std::cout<<toString()<<std::endl;
+//       std::cout<<toString()<<std::endl;
     }
     //**updates the status of the plan, checks if there is a slot in the constraction list for another facility and updates the plan's status to indicate acordinglly */
     void Plan::updateStatus(){

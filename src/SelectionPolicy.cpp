@@ -11,7 +11,10 @@ using std::vector;
 
     }
     const FacilityType& NaiveSelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
-        return facilitiesOptions[++lastSelectedIndex];
+        int size = facilitiesOptions.size();
+        if (lastSelectedIndex == size)
+            lastSelectedIndex = 0;
+        return facilitiesOptions[lastSelectedIndex++];
     }
     const string NaiveSelection::toString() const { return "nve";}
     NaiveSelection *NaiveSelection::clone() const {
