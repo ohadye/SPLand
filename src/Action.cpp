@@ -265,7 +265,15 @@
     }
 
 //BackupSimulation
-    void BackupSimulation::act(Simulation &simulation) {}                                   //implement!
+    void BackupSimulation::act(Simulation &simulation) {
+        if(backup!=nullptr){
+            delete backup;
+            backup = nullptr;
+        }
+        backup=simulation.clone();
+  //      cout<<backup->toString()<<endl;
+        complete();
+    }
 
     BackupSimulation::BackupSimulation()
     {}
@@ -286,7 +294,16 @@
     }
 
 //RestoreSimulation
-    void RestoreSimulation::act(Simulation &simulation) {}                                   //implement!
+    void RestoreSimulation::act(Simulation &simulation) {
+        if(backup == nullptr){
+            error("No backup available");
+            return;
+        }
+       // cout<<backup->toString()<<endl;
+        simulation = *backup;
+       // cout<<backup->toString()<<endl;
+        complete();
+    }                                   //implement!
 
     RestoreSimulation::RestoreSimulation()
     {}

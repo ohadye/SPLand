@@ -29,11 +29,18 @@ using std::vector;
 class BaseAction;
 class SelectionPolicy;
 
+
 class Simulation {
     public:
         Simulation(const string &configFilePath);
         Simulation(const Simulation &other);
-        Simulation operator=(const Simulation& other);
+        Simulation& operator=(const Simulation& other);
+        Simulation(Simulation&& other);
+        void copy(const Simulation& other);
+        void steal(Simulation& other);
+        void clear();
+        Simulation* clone() const;
+        Simulation& operator=(Simulation&& other);
         void start();
         void addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy);
         void addAction(BaseAction *action);
@@ -61,3 +68,6 @@ class Simulation {
         vector<FacilityType> facilitiesOptions;
 
 };
+
+
+extern Simulation* backup;
