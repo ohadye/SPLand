@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 #include "Simulation.h"
+#define ERROR_MSG_PREFIX "Error: "
+#define ATTEMTING_TO_CREATE_EXSISTING_SETTLEMENT_ERROR_MSG  "Settlement already exists"
+#define ATTEMTING_TO_CREATE_EXSISTING_FACILITY_ERROR_MSG "Facility already exists"
 
 class Simulation;
 

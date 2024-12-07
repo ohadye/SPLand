@@ -7,6 +7,16 @@
 #include "Settlement.h"
 using std::string;
 using std::vector;
+#define STEP_CMD_SAVED_WORD "step"
+#define ADD_PLAN_CMD_SAVED_WORD "plan"
+#define ADD_SETTLEMENT_CMD_SAVED_WORD "settlement"
+#define ADD_FACILITY_CMD_SAVED_WORD "facility"
+#define PRINT_PLAN_STATUS_CMD_SAVED_WORD "planStatus"
+#define CHANGE_POLICY_PLAN_CMD_SAVED_WORD "changePolicy"
+#define PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD "log"
+#define CLOSE_CMD_SAVED_WORD "close"
+#define BACKUP_SIMULATION_CMD_SAVED_WORD "backup"
+#define RESSTORE_CMD_SAVED_WORD "restore"
 
 class BaseAction;
 class SelectionPolicy;
