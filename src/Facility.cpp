@@ -1,18 +1,28 @@
 #include "../include/Facility.h"
 #include <string>
 #include <vector>
+#include <sstream>
 using std::string;
 using std::vector;
 //  FacilityType
     FacilityType::FacilityType(const string &name, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
-        name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score)
+                                name(name), 
+                                category(category), 
+                                price(price), 
+                                lifeQuality_score(lifeQuality_score), 
+                                economy_score(economy_score), 
+                                environment_score(environment_score)
     {}
 
     FacilityType::FacilityType(const FacilityType& other):
-        name(other.name), category(other.category), price(other.price), lifeQuality_score(other.lifeQuality_score), economy_score(other.economy_score), environment_score(other.environment_score)
-    {
+                                name(other.name), 
+                                category(other.category), 
+                                price(other.price), 
+                                lifeQuality_score(other.lifeQuality_score), 
+                                economy_score(other.economy_score), 
+                                environment_score(other.environment_score)
+    {}
 
-    }
     string FacilityType::getCategoryString(FacilityCategory category){
         switch (category){
             case FacilityCategory::ECONOMY : return "economy";
@@ -62,16 +72,19 @@ using std::vector;
 
 //  Facility
     Facility::Facility(const string &name, const string &settlementName, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score):
-        FacilityType::FacilityType(name,category,price,lifeQuality_score,environment_score,economy_score), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price)
+        FacilityType::FacilityType(name,category,price,lifeQuality_score,economy_score,environment_score),
+        settlementName(settlementName), 
+        status(FacilityStatus::UNDER_CONSTRUCTIONS), 
+        timeLeft(price)
     {}
 
     Facility::Facility(const FacilityType &type, const string &settlementName):
-        FacilityType::FacilityType(type.getName(),type.getCategory(),type.getCost(),type.getLifeQualityScore(),type.getEconomyScore(),type.getEconomyScore()), 
+        FacilityType::FacilityType(type), 
         settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(type.getCost())
     {}
 
     Facility::Facility(const Facility& other): 
-        FacilityType::FacilityType(other.name, other.category, other.price, other.lifeQuality_score, other.environment_score, other.economy_score),
+        FacilityType::FacilityType(other.name, other.category, other.price, other.lifeQuality_score, other.economy_score, other.environment_score),
         settlementName(other.settlementName), status(other.status), timeLeft(other.timeLeft)
     {
         
@@ -91,7 +104,7 @@ using std::vector;
 
     /*Preforms the logic of progressing the Constraction of the instace of the facility by one unit of time*/
     FacilityStatus Facility::step(){
-        if(--timeLeft == CONSTRACTION_TIME_DONE)
+        if(--timeLeft == 0)
             status = FacilityStatus::OPERATIONAL;//change the status of the facility to operational when there is no more time left for the faciliti'es complation
 
         return status;
@@ -106,5 +119,12 @@ using std::vector;
     }
 
     const string Facility::toString() const{
-        return FacilityType::getName() + " at " + settlementName;
+        std::ostringstream st;
+        st<< "facilityName: "<<FacilityType::getName() <<" facilityStatus: ";
+        if(status == FacilityStatus::OPERATIONAL)
+            st<<"OPERATIONAL ";
+        else    
+            st<<"UNDER_CONSTRUCTION ";
+//        st<<timeLeft;
+        return st.str();
     }

@@ -1,0 +1,5 @@
+.devcontainer/*
+.vscode/*
+config_file.txt
+.DS_Store
+bin/*

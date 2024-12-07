@@ -21,6 +21,7 @@ class FacilityType {
     public:
         FacilityType(const string &name, const FacilityCategory category, const int price, const int lifeQuality_score, const int economy_score, const int environment_score);
         FacilityType(const FacilityType& other);
+        FacilityType operator=(const FacilityType& other) = delete;
         const string &getName() const;
         static string getCategoryString(FacilityCategory category);
         static FacilityCategory parseFacilityCategory(const string& category);

@@ -13,30 +13,47 @@
         status = ActionStatus::COMPLETED;
     }
     /**
-     * @brief 
-     * @note for now I put the printing of the error messge inside this function aswell
-     * @param errorMsg 
+     * @brief setter method for errorMsg string
+
+     * @param errorMsg errorMSG
      */
     void BaseAction::error(string errorMsg){
-        status = ActionStatus::ERROR;
         this->errorMsg = errorMsg;
-        std::cout << ERROR_MSG_PREFIX << errorMsg << endl;/**@warning might not be good pracice to print here */
-    }
-    const string &BaseAction::getErrorMsg() const{
-        return errorMsg;
     }
 
 
-//SimulateStep
 /**
  * makes the simulation preform a passage of one unit of time. 
  */
     void SimulateStep::act(Simulation &simulation) {
+<<<<<<< HEAD
             simulation.step();
     }                                   //implemented
+=======
+           for(int i=0;i<numOfSteps;i++) simulation.step();
+           complete();
+    }
+>>>>>>> 6ecc9d3de3c6d25ea3e88cccc5e1321b80ad9878
 
     SimulateStep::SimulateStep(const int numOfSteps): numOfSteps(numOfSteps)
     {}
+
+    SimulateStep::SimulateStep(const SimulateStep& other): 
+        numOfSteps(other.numOfSteps){
+        if(other.getStatus() == ActionStatus::COMPLETED)
+            complete();
+        else
+            error(other.getErrorMsg());
+    }
+    /*
+    *   
+    */
+    void SimulateStep::act(Simulation &simulation) {
+        int numberOfStepsRemain = numOfSteps; 
+        while (numberOfStepsRemain-- > 0)//while there are remaining steps in action
+            simulation.step();
+    }  
+
     SimulateStep::SimulateStep(const SimulateStep& other): 
         numOfSteps(other.numOfSteps){
         if(other.getStatus() == ActionStatus::COMPLETED)
@@ -45,7 +62,7 @@
             error(other.getErrorMsg());
     }
     
-    const string SimulateStep::toString() const {
+    /*const string SimulateStep::toString() const {
         std::string st = "Simulate step: ";
         std::string num = ""+ numOfSteps;                                       //theres a better way to do this
         if (BaseAction::getStatus() == ActionStatus::ERROR){
@@ -58,12 +75,24 @@
     }
     SimulateStep *SimulateStep::clone() const {
         return new SimulateStep(*this);
-    }
+    }*/
 
 //AddPlan
 
     void AddPlan::act(Simulation &simulation) {
+<<<<<<< HEAD
     }                                
+=======
+        SelectionPolicy* sp = Simulation::parseSelectionPolicy(selectionPolicy);
+        if(sp == nullptr || !simulation.isSettlementExists(settlementName)){
+            error("Cannot create this plan");
+            return;
+        }
+        cout<<"selection Policy is "+sp->toString()<<endl;
+        simulation.addPlan(simulation.getSettlement(settlementName), sp);
+        complete();
+    }
+>>>>>>> 6ecc9d3de3c6d25ea3e88cccc5e1321b80ad9878
 
     AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy): settlementName(settlementName), selectionPolicy(selectionPolicy) 
     {}
@@ -75,6 +104,8 @@
             error(other.getErrorMsg());
     }
     
+   /*testing to see if I can implemement it in BaseAction
+   
     const string AddPlan::toString() const {
         std::string st = "Add Plan: ";
         if (BaseAction::getStatus() == ActionStatus::ERROR){
@@ -87,11 +118,12 @@
     }
     AddPlan *AddPlan::clone() const {
         return new AddPlan(*this);
-    }
+    }*/
 
 //AddSettlement
 
     void AddSettlement::act(Simulation &simulation) {
+<<<<<<< HEAD
         if(&simulation.getSettlement(this->settlementName)!= nullptr)//checks if there is an instance of a settlemnt with the given name
         {
             error(ATTEMTING_TO_CREATE_EXSISTING_SETTLEMENT_ERROR_MSG);
@@ -108,6 +140,16 @@
  * 
  * @param simulation simulation
  */
+=======
+        if(simulation.isSettlementExists(settlementName)){
+            error("Settelment already exists");
+            return;
+        }
+        simulation.addSettlement(new Settlement(settlementName,settlementType)); //why does this return bool?
+        complete();
+    }
+
+>>>>>>> 6ecc9d3de3c6d25ea3e88cccc5e1321b80ad9878
     AddSettlement::AddSettlement(const string &settlementName, SettlementType settlementType): settlementName(settlementName), settlementType(settlementType) 
     {}
 
@@ -141,11 +183,11 @@
     void AddFacility::act(Simulation &simulation) {
         
         if(simulation.doesFacilityExist(this->facilityName))//if the facility type exist in simulation
-        {
+        {`
             error(ATTEMTING_TO_CREATE_EXSISTING_FACILITY_ERROR_MSG);
         }
         else
-        {//@Note 
+        {//@Note  
             simulation.addFacility(*new FacilityType(this->facilityName, this->facilityCategory,this->price, this->lifeQualityScore, this->economyScore, this->environmentScore));
         }
     }
@@ -168,7 +210,7 @@
             st.append("error! "+ BaseAction::getErrorMsg());
         }
         else{
-            st.append("completed! Added Facility "+facilityName+" of category "+FacilityType::getCategoryString(facilityCategory)); //might need to add rest of info
+            st.append("completed! Added Facility "+ facilityName +" of category "+FacilityType::getCategoryString(facilityCategory)); //might need to add rest of info
         }
         return st;
     }
