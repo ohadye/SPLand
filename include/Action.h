@@ -32,7 +32,8 @@ class BaseAction{
         virtual ~BaseAction() = default;
         
         /*Added functions*/
-        std::string statusToString() const; //return the string representing the Action status ("ERROR"/"COMPLETED")
+        const std::string statusToString() const; //return the string representing the Action status ("ERROR"/"COMPLETED")
+        const std::string errorToString() const; //return the String represnting the an act that failed, sytex: "ERROR: " <errorMsg>
 
     protected:
         void complete();

@@ -54,7 +54,7 @@
         Simulation::open();
         //start reading commands in loop and creating corresponding actions
         //stop when !isRunning
-         string input;
+        string input;
         BaseAction* action;
         std::vector<std::string> argumentLine;
         string user_command;
@@ -96,13 +96,16 @@
             else if(user_command == BACKUP_SIMULATION_CMD_SAVED_WORD)
                 action = new BackupSimulation();
            
-            else if(user_command == RESSTORE_CMD_SAVED_WORD)
+            else if(user_command == RESTORE_CMD_SAVED_WORD)
                 action = new RestoreSimulation();
+            else
+                continue;
+
             //@todo check is there is a need to check if the command given doesn't exsits
             action->act(*this);//preform action act, @note responsible ONLY FOR:checks if the action is valid (using functions from simulation), adding the new element in simulation if able, change the action status. 
             addAction(action);//addes action to the action log list
-            //if(action->getStatus() == ActionStatus::ERROR)//prints the error message if there action resulted in an error @todo implement the toString
-                //@todo implement error print msg 
+            if(action->getStatus() == ActionStatus::ERROR)
+                cout << action->errorToString();
         }
     }
 
@@ -144,7 +147,7 @@
         return false;
     }
     Settlement &Simulation::getSettlement(const string &settlementName){
-        Settlement *setPoint =  nullptr;//@todo check if this is good practice
+        Settlement *setPoint =  nullptr;
         for(Settlement* set : this->settlements){
             if(set->Settlement::getName() == settlementName)
                 setPoint = set;
@@ -165,7 +168,7 @@
             if(p.getID() == planID)
                 return p;
         }
-        Plan& p = plans.back();             //dont know if theres a better practice
+        Plan& p = plans.back();
         return p;
     }
 
@@ -173,7 +176,6 @@
         for(BaseAction* a: actionsLog){
             cout<<a->toString()<<endl;
         }
-//        cout<<toString()<<endl;
     }
     const string Simulation::toString() const{
         ostringstream s;

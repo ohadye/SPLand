@@ -22,11 +22,16 @@
         return errorMsg;
     }
 
-    std::string BaseAction::statusToString() const{
+    const std::string BaseAction::statusToString() const{
         if(status ==ActionStatus::COMPLETED)
             return COMPLETED_ACTION_STATUS_STRING;
         else//status is ERROR
             return ERROR_ACTION_STATUS_STRING;
+    }
+    const std::string BaseAction::errorToString() const{
+        std::ostringstream oss;
+        oss << statusToString() << getErrorMsg();
+        return oss.str();
     }
 //SimulateStep
 /**
@@ -49,7 +54,7 @@
     
     const string SimulateStep::toString() const {
         std::ostringstream oss;
-        oss << STEP_CMD_SAVED_WORD << " " << numOfSteps << statusToString();
+        oss << STEP_CMD_SAVED_WORD << " " << numOfSteps << " " << statusToString();
         return oss.str();
     }
      SimulateStep *SimulateStep::clone() const {
@@ -82,7 +87,7 @@
     
     const string AddPlan::toString() const {
          std::ostringstream oss;
-        oss << ADD_PLAN_CMD_SAVED_WORD << " " << settlementName << " " << selectionPolicy << statusToString();
+        oss << ADD_PLAN_CMD_SAVED_WORD << " " << settlementName << " " << selectionPolicy << " " << statusToString();
         return oss.str();
     }
     AddPlan *AddPlan::clone() const {
@@ -112,7 +117,7 @@
     
     const string AddSettlement::toString() const {
         std::ostringstream oss;
-        oss << STEP_CMD_SAVED_WORD << " " << settlementName <<" " << static_cast<int>(settlementType) << " " << statusToString();
+        oss << STEP_CMD_SAVED_WORD << " " << settlementName <<" " << static_cast<int>(settlementType) << " " << statusToString() << endl;
         return oss.str();
     }
     AddSettlement *AddSettlement::clone() const {
@@ -144,7 +149,7 @@
     }
     const string AddFacility::toString() const {
         std::ostringstream oss;
-        oss << ADD_FACILITY_CMD_SAVED_WORD << " " <<facilityName << " " << static_cast<int>(facilityCategory) << " " << price  << " " << lifeQualityScore <<" " << economyScore << " "<<" " << environmentScore << " " << statusToString();
+        oss << ADD_FACILITY_CMD_SAVED_WORD << " " <<facilityName << " " << static_cast<int>(facilityCategory) << " " << price  << " " << lifeQualityScore <<" " << economyScore << " "<<" " << environmentScore << " " << statusToString() << endl;
         return oss.str();
     }
     AddFacility *AddFacility::clone() const {
@@ -173,7 +178,7 @@
     
     const string PrintPlanStatus::toString() const {
         std::ostringstream oss;
-        oss << PRINT_PLAN_STATUS_CMD_SAVED_WORD << " " << planId << " " << statusToString();
+        oss << PRINT_PLAN_STATUS_CMD_SAVED_WORD << " " << planId << " " << statusToString() << endl;
         return oss.str();
     }
 
@@ -203,7 +208,7 @@
     
     const string ChangePlanPolicy::toString() const {
        std::ostringstream oss;
-        oss << CHANGE_POLICY_PLAN_CMD_SAVED_WORD << " " << planId << " " << newPolicy << " " << statusToString();
+        oss << CHANGE_POLICY_PLAN_CMD_SAVED_WORD << " " << planId << " " << newPolicy << " " << statusToString() << endl;
         return oss.str();
     }
     ChangePlanPolicy *ChangePlanPolicy::clone() const {
@@ -227,7 +232,7 @@
     
     const string PrintActionsLog::toString() const {
         std::ostringstream oss;
-        oss << PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD << statusToString();
+        oss << PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD <<" " << statusToString() << endl;
         return oss.str();
     }
     PrintActionsLog *PrintActionsLog::clone() const {
@@ -251,7 +256,7 @@
     
     const string Close::toString() const {
         std::ostringstream oss;
-        oss << CLOSE_CMD_SAVED_WORD <<  " " << statusToString();
+        oss << CLOSE_CMD_SAVED_WORD <<  " " << statusToString() << endl;
         return oss.str();
     };
 
@@ -273,7 +278,7 @@
     
     const string BackupSimulation::toString() const {
         std::ostringstream oss;
-        oss << BACKUP_SIMULATION_CMD_SAVED_WORD << " " << statusToString();
+        oss << BACKUP_SIMULATION_CMD_SAVED_WORD << " " << statusToString()<< endl;
         return oss.str();
     }
     BackupSimulation *BackupSimulation::clone() const {
@@ -294,7 +299,7 @@
     
     const string RestoreSimulation::toString() const {
         std::ostringstream oss;
-        oss << RESSTORE_CMD_SAVED_WORD << " " << statusToString();
+        oss << RESTORE_CMD_SAVED_WORD << " " << statusToString() << endl;
         return oss.str();
     }
     RestoreSimulation *RestoreSimulation::clone() const {

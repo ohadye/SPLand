@@ -18,7 +18,7 @@ using std::vector;
 #define PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD "log"
 #define CLOSE_CMD_SAVED_WORD "close"
 #define BACKUP_SIMULATION_CMD_SAVED_WORD "backup"
-#define RESSTORE_CMD_SAVED_WORD "restore"
+#define RESTORE_CMD_SAVED_WORD "restore"
 
 /*Macro definitions of Selection policy saved word*/
 #define NAIVE_POLCY_SAVED_WORD "nve"
