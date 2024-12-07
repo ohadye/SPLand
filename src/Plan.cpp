@@ -10,14 +10,42 @@ using std::string;
         plan_id(planId), settlement(settlement), selectionPolicy(selectionPolicy), status(PlanStatus::AVALIABLE),
         facilities(),underConstruction(),facilityOptions(facilityOptions), life_quality_score(0),economy_score(0),environment_score(0)
     {}
-    Plan::Plan(const Plan& other) : plan_id(other.plan_id), settlement(other.settlement), selectionPolicy(other.selectionPolicy->clone()), status(other.status), 
-    facilities(),underConstruction(),facilityOptions(other.facilityOptions), life_quality_score(other.life_quality_score),economy_score(other.economy_score),
-    environment_score(other.environment_score){
+    Plan::Plan(const Plan& other) : plan_id(other.plan_id), 
+                                    settlement(other.settlement), 
+                                    selectionPolicy(other.selectionPolicy->clone()), 
+                                    status(other.status), 
+                                    facilities(),
+                                    underConstruction(),
+                                    facilityOptions(other.facilityOptions), 
+                                    life_quality_score(other.life_quality_score),
+                                    economy_score(other.economy_score),
+                                    environment_score(other.environment_score){
         for(Facility* f : other.facilities){
             this->facilities.push_back(f->clone());
         }
         for(Facility* f : other.underConstruction){
             this->underConstruction.push_back(f->clone());
+        }
+    }
+
+    Plan::Plan(Plan&& other): plan_id(other.plan_id), 
+                                settlement(other.settlement),
+                                selectionPolicy(other.selectionPolicy),
+                                status(other.status),
+                                facilities(),
+                                underConstruction(),
+                                facilityOptions(other.facilityOptions),
+                                life_quality_score(other.life_quality_score),
+                                economy_score(other.economy_score),
+                                environment_score(other.environment_score){
+        other.selectionPolicy = nullptr;
+        for(Facility* f : other.facilities){
+            this->facilities.push_back(f);
+            f = nullptr;
+        }
+        for(Facility* f : other.underConstruction){
+            this->underConstruction.push_back(f);
+            f = nullptr;
         }
     }
 
