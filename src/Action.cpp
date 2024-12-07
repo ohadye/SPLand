@@ -22,6 +22,12 @@
         return errorMsg;
     }
 
+    std::string BaseAction::statusToString() const{
+        if(status ==ActionStatus::COMPLETED)
+            return COMPLETED_ACTION_STATUS_STRING;
+        else//status is ERROR
+            return ERROR_ACTION_STATUS_STRING;
+    }
 //SimulateStep
 /**
  * makes the simulation preform a passage of one unit of time. 
@@ -42,19 +48,14 @@
     }
     
     const string SimulateStep::toString() const {
-        std::ostringstream st;
-        st<< "Simulate step: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st<<"error! "<< BaseAction::getErrorMsg();
-        }
-        else{
-            st<<"completed! performed "<< numOfSteps<<" steps.";
-        }
-        return st.str();
+        std::ostringstream oss;
+        oss << STEP_CMD_SAVED_WORD << " " << numOfSteps << statusToString();
+        return oss.str();
     }
-    SimulateStep *SimulateStep::clone() const {
+     SimulateStep *SimulateStep::clone() const {
         return new SimulateStep(*this);
     }
+
 
 //AddPlan
 
@@ -80,14 +81,9 @@
     }
     
     const string AddPlan::toString() const {
-        std::string st = "Add Plan: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed! Added plan with "+selectionPolicy+" to settlement "+settlementName);
-        }
-        return st;
+         std::ostringstream oss;
+        oss << ADD_PLAN_CMD_SAVED_WORD << " " << settlementName << " " << selectionPolicy << statusToString();
+        return oss.str();
     }
     AddPlan *AddPlan::clone() const {
         return new AddPlan(*this);
@@ -115,14 +111,9 @@
     }
     
     const string AddSettlement::toString() const {
-        std::string st = "Add Settlement: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed! Added settlement "+settlementName+" of type "+Settlement::getTypeString(settlementType));
-        }
-        return st;
+        std::ostringstream oss;
+        oss << STEP_CMD_SAVED_WORD << " " << settlementName <<" " << static_cast<int>(settlementType) << " " << statusToString();
+        return oss.str();
     }
     AddSettlement *AddSettlement::clone() const {
         return new AddSettlement(*this);
@@ -152,14 +143,9 @@
             error(other.getErrorMsg());
     }
     const string AddFacility::toString() const {
-        std::string st = "Add Facility: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed! Added Facility "+facilityName+" of category "+FacilityType::getCategoryString(facilityCategory)); //might need to add rest of info
-        }
-        return st;
+        std::ostringstream oss;
+        oss << ADD_FACILITY_CMD_SAVED_WORD << " " <<facilityName << " " << static_cast<int>(facilityCategory) << " " << price  << " " << lifeQualityScore <<" " << economyScore << " "<<" " << environmentScore << " " << statusToString();
+        return oss.str();
     }
     AddFacility *AddFacility::clone() const {
         return new AddFacility(*this);
@@ -186,16 +172,11 @@
     }
     
     const string PrintPlanStatus::toString() const {
-        std::string st = "Print plan status: ";
-        std::string num = ""+ planId;                                       //theres a better way to do this
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed! Printed status of plan "+num);
-        }
-        return st;
+        std::ostringstream oss;
+        oss << PRINT_PLAN_STATUS_CMD_SAVED_WORD << " " << planId << " " << statusToString();
+        return oss.str();
     }
+
     PrintPlanStatus *PrintPlanStatus::clone() const {
         return new PrintPlanStatus(*this);
     }
@@ -221,15 +202,9 @@
     }
     
     const string ChangePlanPolicy::toString() const {
-        std::string st = "Change plan policy: ";
-        std::string num = ""+ planId;                                       //theres a better way to do this
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed! Changed plan "+num+" to "+newPolicy+" policy.");
-        }
-        return st;
+       std::ostringstream oss;
+        oss << CHANGE_POLICY_PLAN_CMD_SAVED_WORD << " " << planId << " " << newPolicy << " " << statusToString();
+        return oss.str();
     }
     ChangePlanPolicy *ChangePlanPolicy::clone() const {
         return new ChangePlanPolicy(*this);
@@ -251,14 +226,9 @@
     }
     
     const string PrintActionsLog::toString() const {
-        std::string st;
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("ERROR"+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("COMPLETE");
-        }
-        return st;
+        std::ostringstream oss;
+        oss << PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD << statusToString();
+        return oss.str();
     }
     PrintActionsLog *PrintActionsLog::clone() const {
         return new PrintActionsLog(*this);
@@ -280,15 +250,11 @@
     }
     
     const string Close::toString() const {
-        std::string st = "Close: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed!");
-        }
-        return st;
-    }
+        std::ostringstream oss;
+        oss << CLOSE_CMD_SAVED_WORD <<  " " << statusToString();
+        return oss.str();
+    };
+
     Close *Close::clone() const {
         return new Close(*this);
     }
@@ -306,14 +272,9 @@
     }
     
     const string BackupSimulation::toString() const {
-        std::string st = "Backup Simulation: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed!");
-        }
-        return st;
+        std::ostringstream oss;
+        oss << BACKUP_SIMULATION_CMD_SAVED_WORD << " " << statusToString();
+        return oss.str();
     }
     BackupSimulation *BackupSimulation::clone() const {
         return new BackupSimulation(*this);
@@ -332,14 +293,9 @@
     }
     
     const string RestoreSimulation::toString() const {
-        std::string st = "Backup Simulation: ";
-        if (BaseAction::getStatus() == ActionStatus::ERROR){
-            st.append("error! "+ BaseAction::getErrorMsg());
-        }
-        else{
-            st.append("completed!");
-        }
-        return st;
+        std::ostringstream oss;
+        oss << RESSTORE_CMD_SAVED_WORD << " " << statusToString();
+        return oss.str();
     }
     RestoreSimulation *RestoreSimulation::clone() const {
         return new RestoreSimulation(*this);

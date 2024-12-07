@@ -2,9 +2,14 @@
 #include <string>
 #include <vector>
 #include "Simulation.h"
-#define ERROR_MSG_PREFIX "Error: "
+
+/*Macro definition of action error messages*/
 #define ATTEMTING_TO_CREATE_EXSISTING_SETTLEMENT_ERROR_MSG  "Settlement already exists"
 #define ATTEMTING_TO_CREATE_EXSISTING_FACILITY_ERROR_MSG "Facility already exists"
+
+/*Macro definition of action status strings*/
+#define COMPLETED_ACTION_STATUS_STRING "COMPLETED"
+#define ERROR_ACTION_STATUS_STRING "ERROR"
 
 class Simulation;
 
@@ -25,6 +30,9 @@ class BaseAction{
         virtual const string toString() const=0;
         virtual BaseAction* clone() const = 0;
         virtual ~BaseAction() = default;
+        
+        /*Added functions*/
+        std::string statusToString() const; //return the string representing the Action status ("ERROR"/"COMPLETED")
 
     protected:
         void complete();

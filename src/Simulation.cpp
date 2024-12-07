@@ -17,11 +17,11 @@
         std::vector<std::string> argumentLine;
         while(getline(configFile,line)){
             argumentLine = Auxiliary::parseArguments(line);
-            if(argumentLine[0] == "settlement"){
+            if(argumentLine[0] == ADD_SETTLEMENT_CMD_SAVED_WORD){
                 Simulation::addSettlement(new Settlement(argumentLine[1], 
                                         Settlement::parseSettlementType(argumentLine[2])));
             }
-            else if(argumentLine[0] == "facility"){
+            else if(argumentLine[0] == ADD_FACILITY_CMD_SAVED_WORD){
                 Simulation::addFacility(FacilityType(argumentLine[1], 
                                         FacilityType::parseFacilityCategory(argumentLine[2]), 
                                         stoi(argumentLine[3]), 
@@ -29,7 +29,7 @@
                                         stoi(argumentLine[5]), 
                                         stoi(argumentLine[6])));
             }
-            else if(argumentLine[0] == "plan"){
+            else if(argumentLine[0] == ADD_PLAN_CMD_SAVED_WORD){
                 Simulation::addPlan(Simulation::getSettlement(argumentLine[1]), Simulation::parseSelectionPolicy(argumentLine[2]));
             }
         }
@@ -38,86 +38,74 @@
     }
 
     SelectionPolicy* Simulation::parseSelectionPolicy(const string& policy){
-        if(policy == "nve")
+        if(policy == NAIVE_POLCY_SAVED_WORD)
             return new NaiveSelection();
-        else if(policy == "bal")
+        else if(policy == BALANCED_POLCY_SAVED_WORD)
             return new BalancedSelection(0,0,0);
-        else if(policy == "eco")
+        else if(policy == CONOMY_POLCY_SAVED_WORD)
             return new EconomySelection();
-        else if(policy == "env")
+        else if(policy == ENVIORMENT_POLCY_SAVED_WORD)
             return new SustainabilitySelection();
         else
             return nullptr;
     }
 
-    void Simulation::start(){
+   void Simulation::start(){
         Simulation::open();
         //start reading commands in loop and creating corresponding actions
         //stop when !isRunning
+         string input;
+        BaseAction* action;
+        std::vector<std::string> argumentLine;
+        string user_command;
         while(isRunning){
-            string input;
-            BaseAction* action;
-            std::vector<std::string> argumentLine;
-            std::cout<<">";
+           
             getline(std::cin, input); //waits user command
             argumentLine = Auxiliary::parseArguments(input);
-            if(argumentLine[0] == "step"){
+            user_command = argumentLine[0];
+
+            if(user_command == STEP_CMD_SAVED_WORD)
                 action = new SimulateStep(stoi(argumentLine[1]));
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "plan"){
+    
+            else if(user_command == ADD_PLAN_CMD_SAVED_WORD)
                 action = new AddPlan(argumentLine[1],argumentLine[2]);
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "settlement"){
+
+            else if(user_command == ADD_SETTLEMENT_CMD_SAVED_WORD)
                 action = new AddSettlement(argumentLine[1],Settlement::parseSettlementType(argumentLine[2]));
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "facility"){
+            
+            else if(user_command == ADD_FACILITY_CMD_SAVED_WORD){
                 action = new AddFacility(argumentLine[1],
-                                        FacilityType::parseFacilityCategory(argumentLine[2]),
+                                        FacilityType::parseFacilityCategory(argumentLine[2]),//@todo need to check if there is a facilitycategory provided exsit
                                         stoi(argumentLine[3]),
                                         stoi(argumentLine[4]),
                                         stoi(argumentLine[5]),
                                         stoi(argumentLine[6]));
-                action->act(*this);
-                actionsLog.push_back(action);
             }
-            else if(argumentLine[0] == "planStatus"){
+            else if(user_command == PRINT_PLAN_STATUS_CMD_SAVED_WORD)
                 action = new PrintPlanStatus(stoi(argumentLine[1]));
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "changePolicy"){
+ 
+            else if(user_command == CHANGE_POLICY_PLAN_CMD_SAVED_WORD)
                 action = new ChangePlanPolicy(stoi(argumentLine[1]), argumentLine[2]);
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "log"){
+             
+            else if(user_command == PRINT_ACTIONS_LOG_PLAN_CMD_SAVED_WORD)
                 action = new PrintActionsLog();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "close"){
+           
+            else if(user_command == CLOSE_CMD_SAVED_WORD)
                 action = new Close();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "backup"){
+            
+            else if(user_command == BACKUP_SIMULATION_CMD_SAVED_WORD)
                 action = new BackupSimulation();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
-            else if(argumentLine[0] == "restore"){
+           
+            else if(user_command == RESSTORE_CMD_SAVED_WORD)
                 action = new RestoreSimulation();
-                action->act(*this);
-                actionsLog.push_back(action);
-            }
+            //@todo check is there is a need to check if the command given doesn't exsits
+            action->act(*this);//preform action act, @note responsible ONLY FOR:checks if the action is valid (using functions from simulation), adding the new element in simulation if able, change the action status. 
+            addAction(action);//addes action to the action log list
+            //if(action->getStatus() == ActionStatus::ERROR)//prints the error message if there action resulted in an error @todo implement the toString
+                //@todo implement error print msg 
         }
     }
+
     void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
 //        std::cout<<"add Plan accessed!" <<std::endl;
         plans.push_back(Plan(planCounter++, settlement, selectionPolicy, this->facilitiesOptions));

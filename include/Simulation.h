@@ -7,6 +7,8 @@
 #include "Settlement.h"
 using std::string;
 using std::vector;
+
+/*Macro definitions of command saved word*/
 #define STEP_CMD_SAVED_WORD "step"
 #define ADD_PLAN_CMD_SAVED_WORD "plan"
 #define ADD_SETTLEMENT_CMD_SAVED_WORD "settlement"
@@ -17,6 +19,12 @@ using std::vector;
 #define CLOSE_CMD_SAVED_WORD "close"
 #define BACKUP_SIMULATION_CMD_SAVED_WORD "backup"
 #define RESSTORE_CMD_SAVED_WORD "restore"
+
+/*Macro definitions of Selection policy saved word*/
+#define NAIVE_POLCY_SAVED_WORD "nve"
+#define BALANCED_POLCY_SAVED_WORD "bal"
+#define CONOMY_POLCY_SAVED_WORD "eco"
+#define ENVIORMENT_POLCY_SAVED_WORD "env"
 
 class BaseAction;
 class SelectionPolicy;
