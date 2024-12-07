@@ -34,7 +34,99 @@
             }
         }
         configFile.close();
-        std::cout<<this->toString()<<std::endl;
+    }
+
+    Simulation::Simulation(Simulation&& other):isRunning(), 
+                                                planCounter(), 
+                                                actionsLog(),
+                                                plans(),
+                                                settlements(),
+                                                facilitiesOptions(){
+        steal(other);
+    }    
+
+    Simulation::Simulation(const Simulation& other): isRunning(), 
+                                                    planCounter(), 
+                                                    actionsLog(),
+                                                    plans(),
+                                                    settlements(),
+                                                    facilitiesOptions(){
+        copy(other);
+    }
+    
+    Simulation& Simulation::operator=(const Simulation& other){
+        if(&other != this){
+            clear();
+            copy(other);
+        }
+        return *this;
+    }
+
+    Simulation& Simulation::operator=(Simulation&& other){
+        if(&other != this){
+            clear();
+            steal(other);
+        }
+        return *this;
+    }
+
+    void Simulation::copy(const Simulation& other){
+        this->isRunning = other.isRunning;
+        this->planCounter = other.planCounter;
+        int sizeOfLog = other.actionsLog.size();
+        for(int i = 0; i < sizeOfLog; i++){
+            this->actionsLog.push_back(other.actionsLog[i]->clone());
+        }
+        for(Settlement* settlement : other.settlements){
+            this->settlements.push_back(settlement->clone());
+        }                                                                           //copy
+        for(const Plan& p: other.plans){
+            this->plans.push_back(Plan(p));
+        }
+        for(const FacilityType& f: other.facilitiesOptions){
+            this->facilitiesOptions.push_back(FacilityType(f));
+        }
+    }
+    void Simulation::steal(Simulation& other){
+        isRunning = other.isRunning;
+        planCounter = other.planCounter;
+        int sizeOfLog = other.actionsLog.size();
+        for(int i = 0; i < sizeOfLog; i++){
+            this->actionsLog.push_back(other.actionsLog[i]);
+            other.actionsLog[i] = nullptr;
+        }
+        int sizeOfSettlements = other.settlements.size();
+        for(int i = 0; i < sizeOfSettlements; i++){
+            this->settlements.push_back(other.settlements[i]);                          //steal
+            other.settlements[i] = nullptr;
+        }
+        
+        for(Plan& p: other.plans){
+            this->plans.push_back(Plan(p));
+        }
+        for(FacilityType& f: other.facilitiesOptions){
+            this->facilitiesOptions.push_back(FacilityType(f));
+        }
+    }
+
+    void Simulation::clear(){
+        plans.clear();
+        facilitiesOptions.clear();
+        for(BaseAction* ba: this->actionsLog){
+            delete ba;
+            ba = nullptr;                                                                  //clear
+        }
+        for(Settlement* set: this->settlements){
+            delete set;
+            set = nullptr;
+        }
+        actionsLog.clear();
+        settlements.clear();
+
+    }
+
+    Simulation* Simulation::clone() const{
+        return new Simulation(*this);
     }
 
     SelectionPolicy* Simulation::parseSelectionPolicy(const string& policy){
@@ -216,8 +308,5 @@
         isRunning = true;
     }
     Simulation::~Simulation(){
-        for(BaseAction* a : actionsLog)
-            delete a;
-        for(Settlement* s : settlements)
-            delete s;
+        clear();
     }

@@ -40,7 +40,7 @@ using std::string;
         }
 
         Settlement* Settlement::clone(){
-            return new Settlement(name,type);
+            return new Settlement(*this);
         }
 
         const int Settlement::getTypeCapacity() const{//@Qustion: is there a better why to implement this? seems to me that the enum needs to "hold" the capacity value somehow... phrhaps make it a struct?
