@@ -188,11 +188,20 @@
 
 //ChangePlanPolicy
     void ChangePlanPolicy::act(Simulation &simulation) {
-        SelectionPolicy* sp = Simulation::parseSelectionPolicy(newPolicy);
-        if(!simulation.doesPlanExist(planId) || sp == nullptr ){
+        if(!simulation.doesPlanExist(planId) || simulation.getPlan(planId).getSelectionPolicyString() == newPolicy){
             error("Cannot change selection policy");
             return;
         }
+        SelectionPolicy* newSelectionPolicy;
+        if(newPolicy == "bal"){
+            newSelectionPolicy = new BalancedSelection(simulation.getPlan(planId).getlifeQualityScore(), 
+                                                        simulation.getPlan(planId).getEconomyScore(),
+                                                        simulation.getPlan(planId).getEnvironmentScore());
+        }
+        else{
+            newSelectionPolicy = Simulation::parseSelectionPolicy(newPolicy);
+        }
+        simulation.getPlan(planId).setSelectionPolicy(newSelectionPolicy);
         complete();
     }                                   //implement!
 

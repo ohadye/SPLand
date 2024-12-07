@@ -45,6 +45,10 @@ using std::string;
         return plan_id;
     }
 
+    const string Plan::getSelectionPolicyString() const{
+        return selectionPolicy->toString();
+    }
+
     void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy){
         delete this->selectionPolicy;
         this->selectionPolicy = selectionPolicy;
