@@ -81,14 +81,25 @@
             Settlement* setClone = settlement->clone();
             this->settlements.push_back(setClone);
         }
-        int sizeOfPlans = other.plans.size();                                                                           //copy
-        for(int i=0;i<sizeOfPlans;i++){
-            Simulation::addPlan(Simulation::getSettlement(other.plans[i].getSettlement().getName()), parseSelectionPolicy(other.plans[i].getSelectionPolicyString()));
-        }
         for(const FacilityType& f: other.facilitiesOptions){
             FacilityType copyOfF(f);
             this->facilitiesOptions.push_back(copyOfF);
         }
+        int sizeOfPlans = other.plans.size();                                                                           //copy
+        for(int i=0;i<sizeOfPlans;i++){
+            Simulation::addPlan(Simulation::getSettlement(other.plans[i].getSettlement().getName()), parseSelectionPolicy(other.plans[i].getSelectionPolicyString()));
+            this->getPlan(i).setScores(other.plans[i].getlifeQualityScore(),other.plans[i].getEconomyScore(),other.plans[i].getEnvironmentScore());
+            for(Facility* f : other.plans[i].getFacilities()){
+                Facility* facClone = f->clone();
+                this->getPlan(i).addFacility(facClone);
+            }
+            for(Facility* f : other.plans[i].getUnderConstruction()){
+                Facility* facClone = f->clone();
+                this->getPlan(i).addUnderConstruction(facClone);
+        }
+        }
+        
+        
     }
     void Simulation::steal(Simulation& other){
         isRunning = other.isRunning;
@@ -104,13 +115,23 @@
             this->settlements.push_back(setPointer);                          //steal
             other.settlements[i] = nullptr;
         }
-        int sizeOfPlans = other.plans.size();                                                                           //copy
-        for(int i=0;i<sizeOfPlans;i++){
-            Simulation::addPlan(Simulation::getSettlement(other.plans[i].getSettlement().getName()), parseSelectionPolicy(other.plans[i].getSelectionPolicyString()));
-        }
         for(FacilityType& f: other.facilitiesOptions){
             FacilityType copyOfF(f);
             this->facilitiesOptions.push_back(copyOfF);
+        }
+        int sizeOfPlans = other.plans.size();                                                                           //copy
+        for(int i=0;i<sizeOfPlans;i++){
+            Simulation::addPlan(Simulation::getSettlement(other.plans[i].getSettlement().getName()), parseSelectionPolicy(other.plans[i].getSelectionPolicyString()));
+            for(Facility* f : other.plans[i].getFacilities()){
+                Facility* facPointer = f;
+                this->getPlan(i).addFacility(facPointer);
+                f = nullptr;
+            }
+            for(Facility* f : other.plans[i].getUnderConstruction()){
+                Facility* facPointer = f;
+                this->getPlan(i).addUnderConstruction(facPointer);
+                f = nullptr;
+            }
         }
     }
 
@@ -270,6 +291,12 @@
         Plan& p = plans.back();
         return p;
     }
+    void Simulation::step(){
+        for (Plan& p :this->plans){
+            p.step();
+        }
+
+    }
 
     void Simulation::printLog(){
         for(BaseAction* a: actionsLog){
@@ -278,24 +305,10 @@
     }
     const string Simulation::toString() const{
         ostringstream s;
-        s<<"Simulation: \nfacility options:\n";
-        for(FacilityType f : facilitiesOptions){
-            s<<f.getName()<<" "<<f.getCost()<<" "<<f.getLifeQualityScore()<<" "<<f.getEconomyScore()<<" "<<f.getEnvironmentScore()<<"\n";
-        }
-        s<<"settlements:\n";
-        for(Settlement* set: settlements){
-            s<<set->toString();
-        }
-        s<<"and plans:\n";
-        for(const Plan &p: plans){
-            s<<p.toString() << "\n";
-        }
+        for(const Plan &plan : plans)
+            s << plan.closeToString() << "\n";
         return s.str();
-    }
-    void Simulation::step(){
-        for (Plan& p :this->plans){
-            p.step();
-        }
+
 
     }
     void Simulation::close(){

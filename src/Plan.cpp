@@ -73,6 +73,12 @@ using std::string;
         return environment_score;
     }
 
+    void Plan::setScores(const int lqs, const int ecs, const int ens){
+        life_quality_score = lqs;
+        economy_score = ecs;
+        environment_score = ens;
+    }
+
     const int Plan::getID() const{
         return plan_id;
     }
@@ -95,6 +101,7 @@ using std::string;
                 life_quality_score+=underConstruction[facilityIndex]->getLifeQualityScore();
                 economy_score+=underConstruction[facilityIndex]->getEconomyScore();
                 environment_score+=underConstruction[facilityIndex]->getEnvironmentScore();
+   //             if(this->getSelectionPolicyString() == SELE)
  //               updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
             }
         }
@@ -121,8 +128,16 @@ using std::string;
         return this->facilities;
     }
 
+    const vector<Facility*>& Plan::getUnderConstruction() const {
+        return this->underConstruction;
+    }
+
     void Plan::addFacility(Facility* facility){
         this->facilities.push_back(facility);
+    }
+
+    void Plan::addUnderConstruction(Facility* facility){
+        this->underConstruction.push_back(facility);
     }
 
     Plan::~Plan(){
@@ -132,6 +147,13 @@ using std::string;
         for (Facility* f : this->underConstruction)
             delete f;
     }
+    const string Plan::closeToString() const{
+
+        std::ostringstream st;
+        st << "PlanID: " <<plan_id << " ,Settlement Name: "<<settlement.getName()<< "\nLifeQualityScore: " << getlifeQualityScore() <<"\nEconomyScore: "<< getEconomyScore() <<"\nEnvironmentScore: " <<getEnvironmentScore();
+        return st.str();
+    }
+
 
     const string Plan::toString() const{
         std::ostringstream st;

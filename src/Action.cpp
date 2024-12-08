@@ -65,8 +65,12 @@
 //AddPlan
 
     void AddPlan::act(Simulation &simulation) {
+        if(!simulation.isSettlementExists(settlementName)){
+            error("Cannot create this plan");
+            return;
+        }
         SelectionPolicy* sp = Simulation::parseSelectionPolicy(selectionPolicy);
-        if(sp == nullptr || !simulation.isSettlementExists(settlementName)){
+        if(sp == nullptr){
             error("Cannot create this plan");
             return;
         }
@@ -192,9 +196,16 @@
         }
         SelectionPolicy* newSelectionPolicy;
         if(newPolicy == "bal"){
-            newSelectionPolicy = new BalancedSelection(simulation.getPlan(planId).getlifeQualityScore(), 
-                                                        simulation.getPlan(planId).getEconomyScore(),
-                                                        simulation.getPlan(planId).getEnvironmentScore());
+            int lqs=0,ecs=0,ens=0;
+            const vector<Facility*>& underConstruction = simulation.getPlan(planId).getUnderConstruction();
+            for(Facility* f : underConstruction){
+                lqs += f->getLifeQualityScore();
+                ecs += f->getEconomyScore();
+                ens += f->getEnvironmentScore();
+            }
+            newSelectionPolicy = new BalancedSelection(simulation.getPlan(planId).getlifeQualityScore()+lqs, 
+                                                        simulation.getPlan(planId).getEconomyScore()+ecs,
+                                                        simulation.getPlan(planId).getEnvironmentScore()+ens);
         }
         else{
             newSelectionPolicy = Simulation::parseSelectionPolicy(newPolicy);
@@ -248,9 +259,11 @@
 
 //Close
     void Close::act(Simulation &simulation) {
+        
+        cout << simulation.toString();
         simulation.close();
         complete();
-    }                                   //implement!
+    }                                 
 
     Close::Close()
     {}

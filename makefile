@@ -1,7 +1,7 @@
 all: clean compile link
 
-run: bin/SPLand
-	bin/SPLand
+run: bin/simulation
+	bin/simulation
 
 compile: 
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Auxiliary.o src/Auxiliary.cpp
@@ -13,7 +13,7 @@ compile:
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Simulation.o src/Simulation.cpp
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/main.o src/main.cpp
 link:
-	g++ -o bin/SPLand bin/Auxiliary.o bin/Settlement.o bin/Action.o bin/Facility.o bin/SelectionPolicy.o bin/Plan.o bin/Simulation.o bin/main.o
+	g++ -o bin/simulation bin/Auxiliary.o bin/Settlement.o bin/Action.o bin/Facility.o bin/SelectionPolicy.o bin/Plan.o bin/Simulation.o bin/main.o
 
 clean: 
 	rm -f bin/*
