@@ -21,10 +21,12 @@ using std::string;
                                     economy_score(other.economy_score),
                                     environment_score(other.environment_score){
         for(Facility* f : other.facilities){
-            this->facilities.push_back(f->clone());
+            Facility* facClone = f->clone();
+            this->facilities.push_back(facClone);
         }
         for(Facility* f : other.underConstruction){
-            this->underConstruction.push_back(f->clone());
+            Facility* facClone = f->clone();
+            this->underConstruction.push_back(facClone);
         }
     }
 
@@ -40,11 +42,13 @@ using std::string;
                                 environment_score(other.environment_score){
         other.selectionPolicy = nullptr;
         for(Facility* f : other.facilities){
-            this->facilities.push_back(f);
+            Facility* facPointer = f;
+            this->facilities.push_back(facPointer);
             f = nullptr;
         }
         for(Facility* f : other.underConstruction){
-            this->underConstruction.push_back(f);
+            Facility* facPointer = f;
+            this->underConstruction.push_back(facPointer);
             f = nullptr;
         }
     }
@@ -88,6 +92,9 @@ using std::string;
         { 
             if(underConstruction[facilityIndex]->step() == FacilityStatus::OPERATIONAL){//if the facillity finsihed it's constractin
                 facilities.push_back(underConstruction[facilityIndex]);
+                life_quality_score+=underConstruction[facilityIndex]->getLifeQualityScore();
+                economy_score+=underConstruction[facilityIndex]->getEconomyScore();
+                environment_score+=underConstruction[facilityIndex]->getEnvironmentScore();
  //               updatePlanConstractionFinalized(facilityIndex);//moves the facility to the correct Vector 
             }
         }
@@ -97,9 +104,6 @@ using std::string;
         updateStatus();
         while(this->status == PlanStatus::AVALIABLE){
             Facility *f = new Facility(selectionPolicy->selectFacility(facilityOptions), this->settlement.getName());
-            life_quality_score+=f->getLifeQualityScore();
-            economy_score+=f->getEconomyScore();
-            environment_score+=f->getEnvironmentScore();
             underConstruction.push_back(f);
             updateStatus();
         }
@@ -131,7 +135,7 @@ using std::string;
 
     const string Plan::toString() const{
         std::ostringstream st;
-        st << "PlanID:" <<plan_id << "\nplanStatus: ";
+        st << "PlanID: " <<plan_id << "\nSettlement Name: "<<settlement.getName()<<"\nplanStatus: ";
         if(status == PlanStatus::AVALIABLE)
             st << "AVAILABLE";
         else    
@@ -139,6 +143,9 @@ using std::string;
         st<<"\nselectionPolicy: " << selectionPolicy->toString();
         st<<"\nLifeQualityScore: "<< life_quality_score <<"\nEconomyScore: "<< economy_score <<"\nEnvironmentScore: "<<environment_score;
         for(Facility* f: facilities){
+            st<<"\n"<<f->toString();
+        }
+        for(Facility* f: underConstruction){
             st<<"\n"<<f->toString();
         }
         return  st.str();

@@ -37,7 +37,7 @@
     }
 
     Simulation::Simulation(Simulation&& other):isRunning(), 
-                                                planCounter(), 
+                                                planCounter(0), 
                                                 actionsLog(),
                                                 plans(),
                                                 settlements(),
@@ -46,7 +46,7 @@
     }    
 
     Simulation::Simulation(const Simulation& other): isRunning(), 
-                                                    planCounter(), 
+                                                    planCounter(0), 
                                                     actionsLog(),
                                                     plans(),
                                                     settlements(),
@@ -72,44 +72,50 @@
 
     void Simulation::copy(const Simulation& other){
         this->isRunning = other.isRunning;
-        this->planCounter = other.planCounter;
         int sizeOfLog = other.actionsLog.size();
         for(int i = 0; i < sizeOfLog; i++){
-            this->actionsLog.push_back(other.actionsLog[i]->clone());
+            BaseAction* actionClone = other.actionsLog[i]->clone();
+            this->actionsLog.push_back(actionClone);
         }
         for(Settlement* settlement : other.settlements){
-            this->settlements.push_back(settlement->clone());
-        }                                                                           //copy
-        for(const Plan& p: other.plans){
-            this->plans.push_back(Plan(p));
+            Settlement* setClone = settlement->clone();
+            this->settlements.push_back(setClone);
+        }
+        int sizeOfPlans = other.plans.size();                                                                           //copy
+        for(int i=0;i<sizeOfPlans;i++){
+            Simulation::addPlan(Simulation::getSettlement(other.plans[i].getSettlement().getName()), parseSelectionPolicy(other.plans[i].getSelectionPolicyString()));
         }
         for(const FacilityType& f: other.facilitiesOptions){
-            this->facilitiesOptions.push_back(FacilityType(f));
+            FacilityType copyOfF(f);
+            this->facilitiesOptions.push_back(copyOfF);
         }
     }
     void Simulation::steal(Simulation& other){
         isRunning = other.isRunning;
-        planCounter = other.planCounter;
         int sizeOfLog = other.actionsLog.size();
         for(int i = 0; i < sizeOfLog; i++){
-            this->actionsLog.push_back(other.actionsLog[i]);
+            BaseAction* actionPointer = other.actionsLog[i];
+            this->actionsLog.push_back(actionPointer);
             other.actionsLog[i] = nullptr;
         }
         int sizeOfSettlements = other.settlements.size();
         for(int i = 0; i < sizeOfSettlements; i++){
-            this->settlements.push_back(other.settlements[i]);                          //steal
+            Settlement* setPointer = other.settlements[i];
+            this->settlements.push_back(setPointer);                          //steal
             other.settlements[i] = nullptr;
         }
-        
-        for(Plan& p: other.plans){
-            this->plans.push_back(Plan(p));
+        int sizeOfPlans = other.plans.size();                                                                           //copy
+        for(int i=0;i<sizeOfPlans;i++){
+            Simulation::addPlan(Simulation::getSettlement(other.plans[i].getSettlement().getName()), parseSelectionPolicy(other.plans[i].getSelectionPolicyString()));
         }
         for(FacilityType& f: other.facilitiesOptions){
-            this->facilitiesOptions.push_back(FacilityType(f));
+            FacilityType copyOfF(f);
+            this->facilitiesOptions.push_back(copyOfF);
         }
     }
 
     void Simulation::clear(){
+        planCounter = 0;
         plans.clear();
         facilitiesOptions.clear();
         for(BaseAction* ba: this->actionsLog){
@@ -150,6 +156,7 @@
         BaseAction* action;
         std::vector<std::string> argumentLine;
         string user_command;
+        cout<<"The simulation has started"<<endl;
         while(isRunning){
            
             getline(std::cin, input); //waits user command
@@ -197,7 +204,7 @@
             action->act(*this);//preform action act, @note responsible ONLY FOR:checks if the action is valid (using functions from simulation), adding the new element in simulation if able, change the action status. 
             addAction(action);//addes action to the action log list
             if(action->getStatus() == ActionStatus::ERROR)
-                cout << action->errorToString();
+                cout << action->errorToString() <<endl;
         }
     }
 
@@ -277,7 +284,7 @@
         }
         s<<"settlements:\n";
         for(Settlement* set: settlements){
-            s<<set->getName();
+            s<<set->toString();
         }
         s<<"and plans:\n";
         for(const Plan &p: plans){

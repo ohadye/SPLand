@@ -36,7 +36,7 @@ using std::string;
 
         const string Settlement::toString() const{
             //write type to string here!
-            return name;
+            return name+" "+getTypeString(type);
         }
 
         Settlement* Settlement::clone(){
